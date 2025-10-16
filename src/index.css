@@ -1,0 +1,25 @@
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #f3f4f6; /* equivalent to bg-gray-100 */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #60a5fa; /* equivalent to bg-blue-400 */
+  border-radius: 9999px; /* equivalent to rounded-full */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #3b82f6; /* equivalent to bg-blue-600 */
+}
