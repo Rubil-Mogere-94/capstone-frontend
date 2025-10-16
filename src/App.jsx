@@ -1,4 +1,4 @@
-// App.jsx - Updated with better organization
+// App.jsx - Updated with proper authentication layout
 import { useState, useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import Header from './components/Header'
@@ -25,6 +25,60 @@ const Main = styled('main')(
     width: '100%',
   }),
 )
+
+// Layout component for authenticated routes
+const AuthenticatedLayout = ({ children, onSearch, hasSearched, searchResults }) => {
+  return (
+    <Main>
+      <Box 
+        sx={{ 
+          position: 'sticky',
+          top: 0,
+          zIndex: 1100,
+          bgcolor: 'background.paper',
+          borderBottom: 1,
+          borderColor: 'divider',
+          backdropFilter: 'blur(20px)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          paddingRight: 2,
+        }}
+      >
+        <Header onSearch={onSearch} />
+        <AuthDetails />
+      </Box>
+
+      <Box sx={{ flexGrow: 1 }}>
+        <Hero onSearch={onSearch} hasSearched={hasSearched} />
+        
+        {hasSearched && (
+          <Box id="search-results" sx={{ py: 4 }}>
+            <SearchResults results={searchResults} />
+          </Box>
+        )}
+      </Box>
+
+      <Footer />
+    </Main>
+  );
+};
+
+// Layout component for authentication pages (signin, signup, forgot password)
+const AuthLayout = ({ children }) => {
+  return (
+    <Main>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: 'column',
+        minHeight: '100vh',
+        width: '100%'
+      }}>
+        {children}
+      </Box>
+    </Main>
+  );
+};
 
 function App() {
   const theme = useTheme()
@@ -61,48 +115,35 @@ function App() {
 
   return (
     <Router>
-      <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      <Box sx={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
         <CssBaseline />
         
         <Routes>
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
+          {/* Authentication routes with AuthLayout */}
+          <Route path="/signin" element={
+            <AuthLayout>
+              <SignIn />
+            </AuthLayout>
+          } />
+          <Route path="/signup" element={
+            <AuthLayout>
+              <SignUp />
+            </AuthLayout>
+          } />
+          <Route path="/forgot-password" element={
+            <AuthLayout>
+              <ForgotPassword />
+            </AuthLayout>
+          } />
           
+          {/* Main app routes with AuthenticatedLayout */}
           {user ? (
             <Route path="/*" element={
-              <Main>
-                <Box 
-                  sx={{ 
-                    position: 'sticky',
-                    top: 0,
-                    zIndex: 1100,
-                    bgcolor: 'background.paper',
-                    borderBottom: 1,
-                    borderColor: 'divider',
-                    backdropFilter: 'blur(20px)',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingRight: 2,
-                  }}
-                >
-                  <Header onSearch={handleSearch} />
-                  <AuthDetails />
-                </Box>
-
-                <Box sx={{ flexGrow: 1 }}>
-                  <Hero onSearch={handleSearch} hasSearched={hasSearched} />
-                  
-                  {hasSearched && (
-                    <Box id="search-results" sx={{ py: 4 }}>
-                      <SearchResults results={searchResults} />
-                    </Box>
-                  )}
-                </Box>
-
-                <Footer />
-              </Main>
+              <AuthenticatedLayout 
+                onSearch={handleSearch} 
+                hasSearched={hasSearched} 
+                searchResults={searchResults} 
+              />
             } />
           ) : (
             <Route path="/*" element={<Navigate to="/signin" replace />} />
