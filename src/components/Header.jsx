@@ -43,7 +43,7 @@ const SearchField = styled(TextField)(({ theme }) => ({
   },
 }))
 
-const Header = ({ onMenuToggle, onSearch, sidebarOpen }) => {
+const Header = ({ onSearch }) => {
   const [searchQuery, setSearchQuery] = useState('')
 
   const handleSearchSubmit = (e) => {
@@ -63,24 +63,13 @@ const Header = ({ onMenuToggle, onSearch, sidebarOpen }) => {
         bgcolor: 'background.paper',
         borderBottom: '1px solid',
         borderColor: 'divider',
+        backdropFilter: 'blur(20px)',
       }}
     >
       <Container maxWidth="xl">
         <Toolbar sx={{ py: 1, gap: 2 }}>
           {/* Left Section - Logo and Menu */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <IconButton
-              onClick={onMenuToggle}
-              sx={{
-                color: 'text.primary',
-                '&:hover': {
-                  bgcolor: 'action.hover',
-                },
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PublicIcon sx={{ color: 'primary.main', fontSize: 32 }} />
               <GradientText variant="h6">
@@ -133,20 +122,7 @@ const Header = ({ onMenuToggle, onSearch, sidebarOpen }) => {
               <NotificationsIcon />
             </IconButton>
             
-            <Button
-              startIcon={<AccountCircleIcon />}
-              sx={{
-                color: 'text.primary',
-                textTransform: 'none',
-                borderRadius: '20px',
-                px: 2,
-                '&:hover': {
-                  bgcolor: 'action.hover',
-                },
-              }}
-            >
-              Sign In
-            </Button>
+            
             
             <Avatar 
               sx={{ 

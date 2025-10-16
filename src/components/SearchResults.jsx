@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Box,
@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Container,
   Grid,
+  Stack,
 } from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -21,6 +22,8 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { styled } from '@mui/material/styles';
 import ContentRow from './ContentRow'; // Import ContentRow
+import MapComponent from './MapComponent'; // Import MapComponent
+import { searchLocation } from '../services/locationIQService'; // Import LocationIQ service
 
 // Re-define GradientButton for this component
 const GradientButton = styled(Button)(({ theme }) => ({
@@ -332,9 +335,67 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
 };
 
 const SearchResults = ({ results }) => {
+  const [mapMarkers, setMapMarkers] = useState([]);
+  const [mapCenter, setMapCenter] = useState([0, 0]);
+  const [mapZoom, setMapZoom] = useState(2);
+  const [activeFilters, setActiveFilters] = useState([]);
+
+  const filterCategories = [
+    'Beach', 'Mountains', 'City', 'Nature', 'Adventure', 'Relaxation', 'Budget-Friendly',
+  ];
+
+  const handleFilterClick = (category) => {
+    setActiveFilters((prevFilters) =>
+      prevFilters.includes(category)
+        ? prevFilters.filter((f) => f !== category)
+        : [...prevFilters, category]
+    );
+  };
+
+  const filteredResults = useMemo(() => {
+    if (activeFilters.length === 0) {
+      return results;
+    }
+    // This is a dummy filtering logic. In a real app, `destination` objects
+    // would have a `categories` array or similar property to filter against.
+    // For now, we'll just filter by destination name containing the category.
+    return results.filter((destination) =>
+      activeFilters.some((filter) =>
+        destination.name.toLowerCase().includes(filter.toLowerCase())
+      )
+    );
+  }, [results, activeFilters]);
+
+  useEffect(() => {
+    const fetchCoordinates = async () => {
+      if (filteredResults && filteredResults.length > 0) {
+        const newMarkers = [];
+        for (const destination of filteredResults) {
+          const query = `${destination.name}, ${destination.country}`;
+          const locationData = await searchLocation(query);
+          if (locationData && locationData.length > 0) {
+            const { lat, lon } = locationData[0];
+            newMarkers.push({
+              position: [parseFloat(lat), parseFloat(lon)],
+              popupText: `${destination.name}, ${destination.country}`,
+            });
+          }
+        }
+        setMapMarkers(newMarkers);
+        if (newMarkers.length > 0) {
+          // Set map center to the first result for now, or calculate a centroid
+          setMapCenter(newMarkers[0].position);
+          setMapZoom(5); // Adjust zoom level as needed
+        }
+      }
+    };
+
+    fetchCoordinates();
+  }, [filteredResults]);
+
   // Dummy categorized data for Netflix-style display
-  const popularDestinations = results.slice(0, 3);
-  const recommendedForYou = results.slice(1, 4);
+  const popularDestinations = filteredResults.slice(0, 3);
+  const recommendedForYou = filteredResults.slice(1, 4);
 
   return (
     <Box
@@ -358,6 +419,26 @@ const SearchResults = ({ results }) => {
             Discover destinations matching your climate preferences.
           </Typography>
         </motion.div>
+
+        {/* Quick Filter Chips */}
+        <Stack direction="row" spacing={1} sx={{ mb: 4, justifyContent: 'center', flexWrap: 'wrap' }}>
+          {filterCategories.map((category) => (
+            <Chip
+              key={category}
+              label={category}
+              clickable
+              color={activeFilters.includes(category) ? 'primary' : 'default'}
+              onClick={() => handleFilterClick(category)}
+              sx={{ borderRadius: '16px' }}
+            />
+          ))}
+        </Stack>
+
+        {mapMarkers.length > 0 && (
+          <Box sx={{ mb: 4 }}>
+            <MapComponent center={mapCenter} zoom={mapZoom} markers={mapMarkers} />
+          </Box>
+        )}
 
         <AnimatePresence>
           <motion.div layout>
