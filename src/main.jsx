@@ -3,38 +3,39 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import 'leaflet/dist/leaflet.css';
 import App from './App.jsx'
+import { BrowserRouter } from 'react-router-dom' // ✅ Add this
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { red, grey, amber, yellow, blue, green } from '@mui/material/colors'; // Import necessary colors
+import { red, grey, amber, yellow, blue, green } from '@mui/material/colors';
 
 // Define a basic Material-UI theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: red[700], // Changed to a strong red
+      main: red[700],
       dark: red[800],
       light: red[500],
     },
     secondary: {
-      main: grey[700], // Darker grey for secondary actions
+      main: grey[700],
       light: grey[500],
       dark: grey[900],
     },
     info: {
-      main: blue[500], // Keeping a blue for info/accents that complement red
+      main: blue[500],
       dark: blue[700],
       light: blue[300],
     },
     error: {
-      main: red[500], // Keep error as red
+      main: red[500],
     },
     success: {
-      main: green[500], // Keep success as green
+      main: green[500],
     },
     warning: {
-      main: amber[500], // Adjusted amber
-      light: yellow[500], // Adjusted yellow
+      main: amber[500],
+      light: yellow[500],
     },
-    grey: { // Custom grey palette for specific shades used
+    grey: {
       50: grey[50],
       100: grey[100],
       200: grey[200],
@@ -46,7 +47,7 @@ const theme = createTheme({
       800: grey[800],
       900: grey[900],
     },
-    blue: { // Custom blue palette for specific shades used
+    blue: {
       50: blue[50],
       100: blue[100],
       200: blue[200],
@@ -56,7 +57,7 @@ const theme = createTheme({
       600: blue[600],
       700: blue[700],
     },
-    red: { // Custom red palette for specific shades used
+    red: {
       50: red[50],
       100: red[100],
       200: red[200],
@@ -68,7 +69,7 @@ const theme = createTheme({
       800: red[800],
       900: red[900],
     },
-    green: { // Custom green palette for specific shades used
+    green: {
       100: green[100],
       800: green[800],
     }
@@ -89,8 +90,10 @@ const theme = createTheme({
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <ThemeProvider theme={theme}>
-      <App />
-    </ThemeProvider>
+    <BrowserRouter> {/* ✅ Wrap your app in Router */}
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </BrowserRouter>
   </StrictMode>,
-)
+);
