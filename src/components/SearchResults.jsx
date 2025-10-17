@@ -20,10 +20,12 @@ import ThermostatIcon from '@mui/icons-material/Thermostat';
 import CloudIcon from '@mui/icons-material/Cloud';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // new icon
 import { styled } from '@mui/material/styles';
-import ContentRow from './ContentRow'; // Import ContentRow
-import MapComponent from './MapComponent'; // Import MapComponent
-import { searchLocation } from '../services/locationIQService'; // Import LocationIQ service
+import { useNavigate } from 'react-router-dom'; // ✅ for navigation
+import ContentRow from './ContentRow';
+import MapComponent from './MapComponent';
+import { searchLocation } from '../services/locationIQService';
 
 // Re-define GradientButton for this component
 const GradientButton = styled(Button)(({ theme }) => ({
@@ -34,7 +36,7 @@ const GradientButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-export const ResultCard = ({ destination, index }) => { // Export ResultCard
+export const ResultCard = ({ destination, index }) => {
   const { name, country, temperature, precipitation, percentile } = destination;
   const [isFavorited, setIsFavorited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -46,8 +48,6 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
 
   const handleCardClick = () => {
     console.log(`Navigating to details page for: ${name}`);
-    // In a real application, you would use react-router-dom or similar
-    // to navigate to a detailed page, e.g., history.push(`/destinations/${name}`);
   };
 
   return (
@@ -58,20 +58,16 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
     >
       <Card
-        onClick={handleCardClick} // Add onClick handler here
+        onClick={handleCardClick}
         sx={{
           borderRadius: '16px',
           boxShadow: 3,
           overflow: 'hidden',
-          transform: 'scale(1)',
-          transition: 'all 300ms',
-          cursor: 'pointer', // Indicate it's clickable
-          '&:hover': {
-            boxShadow: 6,
-          },
+          cursor: 'pointer',
+          '&:hover': { boxShadow: 6 },
         }}
       >
-        {/* Card Image with Overlay */}
+        {/* Card Image */}
         <Box sx={{ position: 'relative', width: '100%', height: 192, overflow: 'hidden' }}>
           <Box
             sx={{
@@ -86,13 +82,10 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
               onClick={toggleFavorite}
               sx={{
                 backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                backdropFilter: 'blur(4px)',
                 p: 1,
                 borderRadius: '50%',
                 boxShadow: 3,
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                },
+                '&:hover': { transform: 'scale(1.1)' },
                 transition: 'transform 300ms',
               }}
             >
@@ -104,26 +97,6 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
             </IconButton>
           </Box>
 
-          {!imageLoaded && (
-            <Box
-              sx={{
-                position: 'absolute',
-                inset: 0,
-                background: 'linear-gradient(to right, #e3f2fd, #e0f7fa)',
-                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                '@keyframes pulse': {
-                  '0%, 100%': { opacity: 1 },
-                  '50%': { opacity: 0.5 },
-                },
-              }}
-            >
-              <LocationOnIcon sx={{ color: 'blue.300', fontSize: 32 }} />
-            </Box>
-          )}
-
           <CardMedia
             component="img"
             image={`https://source.unsplash.com/random/600x400?${name},landscape`}
@@ -133,8 +106,6 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
               width: '100%',
               height: '100%',
               objectFit: 'cover',
-              transition: 'transform 700ms',
-              transform: imageLoaded ? 'scale(1)' : 'scale(1.1)',
               opacity: imageLoaded ? 1 : 0,
             }}
           />
@@ -151,182 +122,20 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
         </Box>
 
         <CardContent sx={{ p: 3 }}>
-          {/* Description */}
-          <Box sx={{ mb: 2 }}>
-            <Typography
-              variant="body2"
-              sx={{
-                color: 'grey.600',
-                backgroundColor: 'rgba(239, 246, 255, 0.5)',
-                p: 1.5,
-                borderRadius: '8px',
-                border: '1px solid #bfdbfe',
-              }}
-            >
-              Ideal for a comfortably warm & dry experience.
-            </Typography>
-          </Box>
-
-          {/* Weather Details */}
-          <Grid container spacing={2} sx={{ mb: 2 }}>
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 1.5,
-                  p: 1.5,
-                  backgroundColor: 'red.50',
-                  borderRadius: '12px',
-                  border: '1px solid red.100',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 235, 238, 0.5)',
-                  },
-                  transition: 'background-color 300ms',
-                }}
-              >
-                <Box
-                  sx={{
-                    backgroundColor: 'red.100',
-                    p: 1,
-                    borderRadius: '8px',
-                    '&:hover': {
-                      backgroundColor: 'red.200',
-                    },
-                    transition: 'background-color 300ms',
-                  }}
-                >
-                  <ThermostatIcon sx={{ color: 'red.500', fontSize: 24 }} />
-                </Box>
-                <Box>
-                  <Typography variant="body2" sx={{ color: 'grey.500' }}>
-                    Avg. Temp
-                  </Typography>
-                  <Typography variant="h6" sx={{ color: 'grey.800', fontWeight: 'bold' }}>
-                    {temperature.avg}°C
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: 'grey.500' }}>
-                    ({temperature.min}°C - {temperature.max}°C)
-                  </Typography>
-                </Box>
-              </Box>
+          {/* Weather Info */}
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <Typography variant="body2">Avg Temp: {temperature.avg}°C</Typography>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Box
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: 1.5,
-                  p: 1.5,
-                  backgroundColor: 'blue.50',
-                  borderRadius: '12px',
-                  border: '1px solid blue.100',
-                  '&:hover': {
-                    backgroundColor: 'rgba(227, 242, 253, 0.5)',
-                  },
-                  transition: 'background-color 300ms',
-                }}
-              >
-                <Box
-                  sx={{
-                    backgroundColor: 'blue.100',
-                    p: 1,
-                    borderRadius: '8px',
-                    '&:hover': {
-                      backgroundColor: 'blue.200',
-                    },
-                    transition: 'background-color 300ms',
-                  }}
-                >
-                  <CloudIcon sx={{ color: 'blue.500', fontSize: 24 }} />
-                </Box>
-                <Box>
-                  <Typography variant="body2" sx={{ color: 'grey.500' }}>
-                    Avg. Precip
-                  </Typography>
-                  <Typography variant="h6" sx={{ color: 'grey.800', fontWeight: 'bold' }}>
-                    {precipitation.avg} mm
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: 'grey.500' }}>
-                    ({precipitation.min} mm - {precipitation.max} mm)
-                  </Typography>
-                </Box>
-              </Box>
+            <Grid item xs={6}>
+              <Typography variant="body2">Precip: {precipitation.avg}mm</Typography>
             </Grid>
           </Grid>
 
-          {/* Percentile Bands */}
-          <Box sx={{ mb: 3, p: 2, backgroundColor: 'grey.50', borderRadius: '12px', border: '1px solid grey.100' }}>
-            <Typography variant="body2" sx={{ fontWeight: 'medium', color: 'grey.700', mb: 1 }}>
-              Climate Range (10th-90th percentile)
-            </Typography>
-            <Grid container spacing={1.5} sx={{ fontSize: '0.75rem' }}>
-              <Grid item xs={6}>
-                <Typography variant="caption" sx={{ color: 'grey.500' }}>
-                  Temperature
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'grey.800', fontWeight: 'semibold' }}>
-                  {percentile.tempMin}°C - {percentile.tempMax}°C
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="caption" sx={{ color: 'grey.500' }}>
-                  Precipitation
-                </Typography>
-                <Typography variant="body2" sx={{ color: 'grey.800', fontWeight: 'semibold' }}>
-                  {percentile.precipMin} mm - {percentile.precipMax} mm
-                </Typography>
-              </Grid>
-            </Grid>
-          </Box>
-
-          {/* View Details Button and Tags */}
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Box sx={{ display: 'flex', gap: 1 }}>
-              <Chip
-                label="Perfect Weather"
-                sx={{
-                  backgroundColor: 'green.100',
-                  color: 'green.800',
-                  fontSize: '0.75rem',
-                  px: 1,
-                  py: 0.5,
-                  borderRadius: '9999px',
-                }}
-              />
-              <Chip
-                label="Low Rainfall"
-                sx={{
-                  backgroundColor: 'blue.100',
-                  color: 'blue.800',
-                  fontSize: '0.75rem',
-                  px: 1,
-                  py: 0.5,
-                  borderRadius: '9999px',
-                }}
-              />
-            </Box>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <GradientButton
-                variant="contained"
-                sx={{
-                  px: 2.5,
-                  py: 1.25,
-                  borderRadius: '12px',
-                  fontWeight: 'semibold',
-                  boxShadow: 2,
-                  '&:hover': {
-                    boxShadow: 3,
-                  },
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 1,
-                }}
-              >
-                View Details
-                <ArrowForwardIcon sx={{ fontSize: 16 }} />
-              </GradientButton>
-            </motion.div>
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <GradientButton>
+              View Details <ArrowForwardIcon fontSize="small" />
+            </GradientButton>
           </Box>
         </CardContent>
       </Card>
@@ -335,6 +144,7 @@ export const ResultCard = ({ destination, index }) => { // Export ResultCard
 };
 
 const SearchResults = ({ results }) => {
+  const navigate = useNavigate(); // ✅ navigation hook
   const [mapMarkers, setMapMarkers] = useState([]);
   const [mapCenter, setMapCenter] = useState([0, 0]);
   const [mapZoom, setMapZoom] = useState(2);
@@ -353,12 +163,7 @@ const SearchResults = ({ results }) => {
   };
 
   const filteredResults = useMemo(() => {
-    if (activeFilters.length === 0) {
-      return results;
-    }
-    // This is a dummy filtering logic. In a real app, `destination` objects
-    // would have a `categories` array or similar property to filter against.
-    // For now, we'll just filter by destination name containing the category.
+    if (activeFilters.length === 0) return results;
     return results.filter((destination) =>
       activeFilters.some((filter) =>
         destination.name.toLowerCase().includes(filter.toLowerCase())
@@ -368,12 +173,12 @@ const SearchResults = ({ results }) => {
 
   useEffect(() => {
     const fetchCoordinates = async () => {
-      if (filteredResults && filteredResults.length > 0) {
+      if (filteredResults?.length > 0) {
         const newMarkers = [];
         for (const destination of filteredResults) {
           const query = `${destination.name}, ${destination.country}`;
           const locationData = await searchLocation(query);
-          if (locationData && locationData.length > 0) {
+          if (locationData?.length > 0) {
             const { lat, lon } = locationData[0];
             newMarkers.push({
               position: [parseFloat(lat), parseFloat(lon)],
@@ -383,17 +188,14 @@ const SearchResults = ({ results }) => {
         }
         setMapMarkers(newMarkers);
         if (newMarkers.length > 0) {
-          // Set map center to the first result for now, or calculate a centroid
           setMapCenter(newMarkers[0].position);
-          setMapZoom(5); // Adjust zoom level as needed
+          setMapZoom(5);
         }
       }
     };
-
     fetchCoordinates();
   }, [filteredResults]);
 
-  // Dummy categorized data for Netflix-style display
   const popularDestinations = filteredResults.slice(0, 3);
   const recommendedForYou = filteredResults.slice(1, 4);
 
@@ -402,10 +204,22 @@ const SearchResults = ({ results }) => {
       component="section"
       sx={{
         py: 8,
-        background: 'linear-gradient(to bottom, rgba(239, 246, 255, 0.5), rgba(224, 247, 250, 0.5))',
+        background: 'linear-gradient(to bottom, rgba(239,246,255,0.5), rgba(224,247,250,0.5))',
       }}
     >
       <Container maxWidth="lg">
+        {/* ✅ Back to Home Button */}
+        <Box sx={{ mb: 3 }}>
+          <Button
+            variant="outlined"
+            startIcon={<ArrowBackIcon />}
+            onClick={() => navigate('/')}
+            sx={{ borderRadius: '12px', fontWeight: 'bold' }}
+          >
+            Back to Home
+          </Button>
+        </Box>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -420,7 +234,6 @@ const SearchResults = ({ results }) => {
           </Typography>
         </motion.div>
 
-        {/* Quick Filter Chips */}
         <Stack direction="row" spacing={1} sx={{ mb: 4, justifyContent: 'center', flexWrap: 'wrap' }}>
           {filterCategories.map((category) => (
             <Chip
@@ -442,7 +255,6 @@ const SearchResults = ({ results }) => {
 
         <AnimatePresence>
           <motion.div layout>
-            {/* Display Content Rows */}
             <ContentRow title="Popular Destinations" destinations={popularDestinations} />
             <ContentRow title="Recommended for You" destinations={recommendedForYou} />
           </motion.div>
