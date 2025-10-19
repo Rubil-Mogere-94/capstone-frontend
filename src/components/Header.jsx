@@ -1,6 +1,5 @@
-// Updated Header.jsx with better integration
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
+import React from 'react'
+import { Link } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -9,13 +8,10 @@ import {
   IconButton,
   Box,
   Container,
-  TextField,
-  InputAdornment,
   Avatar,
   Chip,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-import SearchIcon from '@mui/icons-material/Search'
 import NotificationsIcon from '@mui/icons-material/Notifications'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
 import PublicIcon from '@mui/icons-material/Public'
@@ -28,31 +24,7 @@ const GradientText = styled(Typography)(({ theme }) => ({
   fontWeight: 'bold',
 }))
 
-const SearchField = styled(TextField)(({ theme }) => ({
-  '& .MuiOutlinedInput-root': {
-    borderRadius: '25px',
-    backgroundColor: theme.palette.background.paper,
-    transition: 'all 0.3s ease',
-    '&:hover': {
-      backgroundColor: theme.palette.action.hover,
-    },
-    '&.Mui-focused': {
-      backgroundColor: theme.palette.background.paper,
-      boxShadow: `0 0 0 2px ${theme.palette.primary.main}20`,
-    },
-  },
-}))
-
-const Header = ({ onSearch }) => {
-  const [searchQuery, setSearchQuery] = useState('')
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      console.log('Searching for:', searchQuery)
-      // Trigger search functionality
-    }
-  }
+const Header = () => {
 
   return (
     <AppBar 
@@ -67,9 +39,17 @@ const Header = ({ onSearch }) => {
       }}
     >
       <Container maxWidth="xl">
-        <Toolbar sx={{ py: 1, gap: 2 }}>
+        <Toolbar sx={{ py: 1, gap: { xs: 1, md: 2 } }}>
           {/* Left Section - Logo and Menu */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, md: 2 } }}>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              sx={{ mr: 2, display: { md: 'none' } }}
+            >
+              <MenuIcon />
+            </IconButton>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <PublicIcon sx={{ color: 'primary.main', fontSize: 32 }} />
               <GradientText variant="h6">
@@ -85,30 +65,20 @@ const Header = ({ onSearch }) => {
             </Box>
           </Box>
 
-          {/* Center Section - Search */}
-          <Box 
-            component="form" 
-            onSubmit={handleSearchSubmit}
-            sx={{ 
-              flexGrow: 1,
-              maxWidth: 600,
-              mx: 4
-            }}
-          >
-            <SearchField
-              fullWidth
-              size="small"
-              placeholder="Search destinations, climates, activities..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon sx={{ color: 'text.secondary' }} />
-                  </InputAdornment>
-                ),
-              }}
-            />
+          {/* Navigation Links */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', gap: 4 }}>
+            <Button color="inherit" component={Link} to="/explore" sx={{ fontWeight: 'bold' }}>
+              Explore
+            </Button>
+            <Button color="inherit" component={Link} to="/destinations" sx={{ fontWeight: 'bold' }}>
+              Destinations
+            </Button>
+            <Button color="inherit" component={Link} to="/favorites" sx={{ fontWeight: 'bold' }}>
+              Favorites
+            </Button>
+            <Button color="inherit" component={Link} to="/profile" sx={{ fontWeight: 'bold' }}>
+              Profile
+            </Button>
           </Box>
 
           {/* Right Section - User Actions */}

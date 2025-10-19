@@ -136,7 +136,7 @@ const Hero = ({ onSearch, hasSearched }) => {
               </Typography>
             </motion.div>
 
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -160,7 +160,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                   Search by location, dates, and travel preferences.
                 </Typography>
               </Typography>
-            </motion.p>
+            </motion.div>
           </>
         )}
 
@@ -201,8 +201,8 @@ const Hero = ({ onSearch, hasSearched }) => {
               gap: 2,
             }}
           >
-            <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-              <Grid item xs={12} md={4}>
+              <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+              <Grid xs={12} md={4}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -250,7 +250,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid xs={12} md={4}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -298,7 +298,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                 />
               </Grid>
 
-              <Grid item xs={12} md={4}>
+              <Grid xs={12} md={4}>
                 <TextField
                   fullWidth
                   variant="outlined"

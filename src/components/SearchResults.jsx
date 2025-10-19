@@ -37,7 +37,7 @@ const GradientButton = styled(Button)(({ theme }) => ({
 }));
 
 export const ResultCard = ({ destination, index }) => {
-  const { name, country, temperature, precipitation, percentile } = destination;
+  const { name, country, temperature, precipitation } = destination;
   const [isFavorited, setIsFavorited] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
 

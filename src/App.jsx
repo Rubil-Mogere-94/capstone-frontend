@@ -1,15 +1,16 @@
-// App.jsx - Fixed to work with main.jsx router
 import { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import Hero from './components/Hero';
-import SearchResults from './components/SearchResults';
 import SignIn from './components/SignIn';
 import SignUp from './components/SignUp';
 import AuthDetails from './components/AuthDetails';
 import ForgotPassword from './components/ForgotPassword';
-import { Box, CssBaseline, useTheme, useMediaQuery } from '@mui/material';
+import ExplorePage from './components/ExplorePage';
+import ProfilePage from './components/ProfilePage';
+import DestinationsPage from './components/DestinationsPage';
+import FavoritesPage from './components/FavoritesPage';
+import { Box, CssBaseline } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import app from './firebase';
@@ -25,38 +26,16 @@ const Main = styled('main')(({ theme }) => ({
 }));
 
 // Layout component for authenticated routes
-const AuthenticatedLayout = ({ onSearch, hasSearched, searchResults }) => {
+const AuthenticatedLayout = () => {
   return (
     <Main>
-      <Box
-        sx={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 1100,
-          bgcolor: 'background.paper',
-          borderBottom: 1,
-          borderColor: 'divider',
-          backdropFilter: 'blur(20px)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingRight: 2,
-        }}
-      >
-        <Header onSearch={onSearch} />
-        <AuthDetails />
-      </Box>
-
-      <Box sx={{ flexGrow: 1 }}>
-        <Hero onSearch={onSearch} hasSearched={hasSearched} />
-        {hasSearched && (
-          <Box id="search-results" sx={{ py: 4 }}>
-            <SearchResults results={searchResults} />
-          </Box>
-        )}
-      </Box>
-
-      <Footer />
+      <Routes>
+        <Route path="/explore" element={<ExplorePage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/destinations" element={<DestinationsPage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="*" element={<Navigate to="/explore" replace />} />
+      </Routes>
     </Main>
   );
 };
@@ -78,10 +57,6 @@ const AuthLayout = ({ children }) => (
 );
 
 function App() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [hasSearched, setHasSearched] = useState(false);
-  const [searchResults, setSearchResults] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const auth = getAuth(app);
@@ -93,17 +68,6 @@ function App() {
     });
     return () => unsubscribe();
   }, [auth]);
-
-  const handleSearch = (results) => {
-    setSearchResults(results);
-    setHasSearched(true);
-    setTimeout(() => {
-      document.getElementById('search-results')?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-      });
-    }, 100);
-  };
 
   if (loading) {
     return (
@@ -155,11 +119,7 @@ function App() {
           <Route
             path="/*"
             element={
-              <AuthenticatedLayout
-                onSearch={handleSearch}
-                hasSearched={hasSearched}
-                searchResults={searchResults}
-              />
+              <AuthenticatedLayout />
             }
           />
         ) : (
