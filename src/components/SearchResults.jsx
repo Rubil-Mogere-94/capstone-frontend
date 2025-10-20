@@ -1,4 +1,6 @@
+import { API_BASE_URL } from '../config';
 import React, { useState, useEffect, useMemo } from 'react';
+import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Box,
@@ -14,8 +16,6 @@ import {
   Grid,
   Stack,
 } from '@mui/material';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
 import CloudIcon from '@mui/icons-material/Cloud';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -25,30 +25,14 @@ import { styled } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom'; // ✅ for navigation
 import ContentRow from './ContentRow';
 import MapComponent from './MapComponent';
-import { searchLocation } from '../services/locationIQService';
-
-// Re-define GradientButton for this component
-const GradientButton = styled(Button)(({ theme }) => ({
-  background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.info.main})`,
-  color: theme.palette.common.white,
-  '&:hover': {
-    background: `linear-gradient(to right, ${theme.palette.primary.dark}, ${theme.palette.info.dark})`,
-  },
-}));
+import { GradientButton } from './common/GradientButton';
+import { FilterSection } from './SearchResults/FilterSection';
+import { useQueryClient } from '@tanstack/react-query';
 
 export const ResultCard = ({ destination, index }) => {
-  const { name, country, temperature, precipitation } = destination;
-  const [isFavorited, setIsFavorited] = useState(false);
+  const { id, name, country, temperature, precipitation } = destination;
   const [imageLoaded, setImageLoaded] = useState(false);
-
-  const toggleFavorite = (e) => {
-    e.stopPropagation();
-    setIsFavorited(!isFavorited);
-  };
-
-  const handleCardClick = () => {
-    console.log(`Navigating to details page for: ${name}`);
-  };
+  const navigate = useNavigate();
 
   return (
     <motion.div
@@ -58,7 +42,6 @@ export const ResultCard = ({ destination, index }) => {
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
     >
       <Card
-        onClick={handleCardClick}
         sx={{
           borderRadius: '16px',
           boxShadow: 3,
@@ -77,31 +60,16 @@ export const ResultCard = ({ destination, index }) => {
               zIndex: 10,
             }}
           />
-          <Box sx={{ position: 'absolute', top: 16, right: 16, zIndex: 20 }}>
-            <IconButton
-              onClick={toggleFavorite}
-              sx={{
-                backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                p: 1,
-                borderRadius: '50%',
-                boxShadow: 3,
-                '&:hover': { transform: 'scale(1.1)' },
-                transition: 'transform 300ms',
-              }}
-            >
-              {isFavorited ? (
-                <FavoriteIcon sx={{ color: 'red.500', fontSize: 20 }} />
-              ) : (
-                <FavoriteBorderIcon sx={{ color: 'grey.600', fontSize: 20 }} />
-              )}
-            </IconButton>
-          </Box>
 
           <CardMedia
             component="img"
+            loading="lazy"
             image={`https://source.unsplash.com/random/600x400?${name},landscape`}
             alt={`${name} landscape`}
             onLoad={() => setImageLoaded(true)}
+            onError={(e) => {
+              e.target.src = '/fallback-image.jpg'; // Add fallback
+            }}
             sx={{
               width: '100%',
               height: '100%',
@@ -124,16 +92,16 @@ export const ResultCard = ({ destination, index }) => {
         <CardContent sx={{ p: 3 }}>
           {/* Weather Info */}
           <Grid container spacing={2}>
-            <Grid item xs={6}>
-              <Typography variant="body2">Avg Temp: {temperature.avg}°C</Typography>
+            <Grid sx={{ xs: 6 }}>
+              <Typography variant="body2">Avg Temp: {temperature.avg !== null ? `${temperature.avg}°C` : 'N/A'}</Typography>
             </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body2">Precip: {precipitation.avg}mm</Typography>
+            <Grid sx={{ xs: 6 }}>
+              <Typography variant="body2">Precip: {precipitation.avg !== null ? `${precipitation.avg}mm` : 'N/A'}</Typography>
             </Grid>
           </Grid>
 
           <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
-            <GradientButton>
+            <GradientButton onClick={() => navigate(`/destinations/${id}`)}>
               View Details <ArrowForwardIcon fontSize="small" />
             </GradientButton>
           </Box>
@@ -150,10 +118,8 @@ const SearchResults = ({ results }) => {
   const [mapZoom, setMapZoom] = useState(2);
   const [activeFilters, setActiveFilters] = useState([]);
 
-  const filterCategories = [
-    'Beach', 'Mountains', 'City', 'Nature', 'Adventure', 'Relaxation', 'Budget-Friendly',
-  ];
-
+  
+  
   const handleFilterClick = (category) => {
     setActiveFilters((prevFilters) =>
       prevFilters.includes(category)
@@ -172,28 +138,17 @@ const SearchResults = ({ results }) => {
   }, [results, activeFilters]);
 
   useEffect(() => {
-    const fetchCoordinates = async () => {
-      if (filteredResults?.length > 0) {
-        const newMarkers = [];
-        for (const destination of filteredResults) {
-          const query = `${destination.name}, ${destination.country}`;
-          const locationData = await searchLocation(query);
-          if (locationData?.length > 0) {
-            const { lat, lon } = locationData[0];
-            newMarkers.push({
-              position: [parseFloat(lat), parseFloat(lon)],
-              popupText: `${destination.name}, ${destination.country}`,
-            });
-          }
-        }
-        setMapMarkers(newMarkers);
-        if (newMarkers.length > 0) {
-          setMapCenter(newMarkers[0].position);
-          setMapZoom(5);
-        }
+    if (filteredResults?.length > 0) {
+      const newMarkers = filteredResults.map(destination => ({
+        position: [destination.lat, destination.lon],
+        data: destination,
+      }));
+      setMapMarkers(newMarkers);
+      if (newMarkers.length > 0) {
+        setMapCenter(newMarkers[0].position);
+        setMapZoom(5);
       }
-    };
-    fetchCoordinates();
+    }
   }, [filteredResults]);
 
   const popularDestinations = filteredResults.slice(0, 3);
@@ -234,18 +189,7 @@ const SearchResults = ({ results }) => {
           </Typography>
         </motion.div>
 
-        <Stack direction="row" spacing={1} sx={{ mb: 4, justifyContent: 'center', flexWrap: 'wrap' }}>
-          {filterCategories.map((category) => (
-            <Chip
-              key={category}
-              label={category}
-              clickable
-              color={activeFilters.includes(category) ? 'primary' : 'default'}
-              onClick={() => handleFilterClick(category)}
-              sx={{ borderRadius: '16px' }}
-            />
-          ))}
-        </Stack>
+        <FilterSection activeFilters={activeFilters} onFilterClick={handleFilterClick} />
 
         {mapMarkers.length > 0 && (
           <Box sx={{ mb: 4 }}>
@@ -255,8 +199,8 @@ const SearchResults = ({ results }) => {
 
         <AnimatePresence>
           <motion.div layout>
-            <ContentRow title="Popular Destinations" destinations={popularDestinations} />
-            <ContentRow title="Recommended for You" destinations={recommendedForYou} />
+            <ContentRow title="Popular Destinations" destinations={popularDestinations.map((dest, index) => <ResultCard key={dest.id} destination={dest} index={index} />)} />
+            <ContentRow title="Recommended for You" destinations={recommendedForYou.map((dest, index) => <ResultCard key={dest.id} destination={dest} index={index} />)} />
           </motion.div>
         </AnimatePresence>
       </Container>

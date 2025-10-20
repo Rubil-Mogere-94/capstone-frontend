@@ -4,16 +4,19 @@ import app from '../firebase';
 import { logOut } from '../services/authService';
 import { Box, Button, Typography } from '@mui/material';
 
-const AuthDetails = () => {
+const AuthDetails = ({ onUserChange }) => {
   const [user, setUser] = useState(null);
   const auth = getAuth(app);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      if (onUserChange) {
+        onUserChange(currentUser);
+      }
     });
     return () => unsubscribe();
-  }, [auth]);
+  }, [auth, onUserChange]);
 
   const handleLogOut = async () => {
     try {

@@ -6,6 +6,7 @@ import App from './App.jsx'
 import { BrowserRouter } from 'react-router-dom' // ✅ Add this
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { red, grey, amber, yellow, blue, green } from '@mui/material/colors';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // Define a basic Material-UI theme
 const theme = createTheme({
@@ -88,11 +89,15 @@ const theme = createTheme({
   },
 });
 
+const queryClient = new QueryClient();
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter> {/* ✅ Wrap your app in Router */}
       <ThemeProvider theme={theme}>
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <App />
+        </QueryClientProvider>
       </ThemeProvider>
     </BrowserRouter>
   </StrictMode>,

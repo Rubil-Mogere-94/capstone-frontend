@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '../config';
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
@@ -8,69 +9,90 @@ import {
   InputAdornment,
   Container,
   Grid,
+  CircularProgress,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import GroupIcon from '@mui/icons-material/Group';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled, useTheme } from '@mui/material/styles'; // Import useTheme
+import { GradientButton } from './common/GradientButton';
 
-// Custom styled components for gradient text and button (re-defined for this component)
 const GradientText = styled(Typography)(({ theme }) => ({
-  background: `linear-gradient(to right, ${theme.palette.warning.main}, ${theme.palette.warning.light})`,
+  background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.info.main} 90%)`,
   WebkitBackgroundClip: 'text',
   WebkitTextFillColor: 'transparent',
-  display: 'inline-block',
 }));
 
-const GradientButton = styled(Button)(({ theme }) => ({
-  background: `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`, // Use primary and secondary from theme
-  color: theme.palette.common.white,
-  '&:hover': {
-    background: `linear-gradient(to right, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
-  },
-}));
+import axios from 'axios';
+
+// ... (rest of the imports)
 
 const Hero = ({ onSearch, hasSearched }) => {
   const theme = useTheme(); // Access theme
   const [location, setLocation] = useState('');
   const [dates, setDates] = useState('');
   const [guests, setGuests] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-    console.log('Searching for:', { location, dates, guests });
-    // Simulate search results
-    const dummyResults = [
-      {
-        name: 'Barcelona',
-        country: 'Spain',
-        temperature: { avg: 20, min: 15, max: 25 },
-        precipitation: { avg: 30, min: 10, max: 50 },
-        percentile: { tempMin: 18, tempMax: 27, precipMin: 5, precipMax: 60 },
-      },
-      {
-        name: 'Cape Town',
-        country: 'South Africa',
-        temperature: { avg: 22, min: 18, max: 28 },
-        precipitation: { avg: 20, min: 5, max: 40 },
-        percentile: { tempMin: 20, tempMax: 30, precipMin: 2, precipMax: 50 },
-      },
-      {
-        name: 'Sydney',
-        country: 'Australia',
-        temperature: { avg: 24, min: 20, max: 30 },
-        precipitation: { avg: 40, min: 15, max: 70 },
-        percentile: { tempMin: 22, tempMax: 32, precipMin: 10, precipMax: 80 },
-      },
-      {
-        name: 'Lisbon',
-        country: 'Portugal',
-        temperature: { avg: 19, min: 14, max: 24 },
-        precipitation: { avg: 35, min: 12, max: 55 },
-        percentile: { tempMin: 17, tempMax: 26, precipMin: 8, precipMax: 65 },
-      },
-    ];
-    onSearch(dummyResults);
+  const handleSearch = async () => {
+    if (!location) {
+      onSearch([]);
+      return;
+    }
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/search?q=${location}`);
+      const results = response.data;
+
+      const formattedResults = results.map(dest => {
+        let city = dest.name;
+        let country = '';
+        const nameParts = dest.name.split(', ');
+        if (nameParts.length > 1) {
+          city = nameParts[0];
+          country = nameParts.slice(1).join(', ');
+        }
+
+        const currentMonth = new Date().getMonth();
+        const avgTemp = dest.monthly_mean_temp_c && dest.monthly_mean_temp_c.length > currentMonth
+          ? dest.monthly_mean_temp_c[currentMonth]
+          : null;
+        const minTemp = dest.monthly_mean_temp_c && dest.monthly_mean_temp_c.length > 0
+          ? Math.min(...dest.monthly_mean_temp_c)
+          : null;
+        const maxTemp = dest.monthly_mean_temp_c && dest.monthly_mean_temp_c.length > 0
+          ? Math.max(...dest.monthly_mean_temp_c)
+          : null;
+
+        const avgPrecip = dest.monthly_precip_mm && dest.monthly_precip_mm.length > currentMonth
+          ? dest.monthly_precip_mm[currentMonth]
+          : null;
+        const minPrecip = dest.monthly_precip_mm && dest.monthly_precip_mm.length > 0
+          ? Math.min(...dest.monthly_precip_mm)
+          : null;
+        const maxPrecip = dest.monthly_precip_mm && dest.monthly_precip_mm.length > 0
+          ? Math.max(...dest.monthly_precip_mm)
+          : null;
+
+        return {
+          id: dest.id,
+          name: city,
+          country: country,
+          temperature: { avg: avgTemp, min: minTemp, max: maxTemp },
+          precipitation: { avg: avgPrecip, min: minPrecip, max: maxPrecip },
+          lat: dest.lat,
+          lon: dest.lon
+        };
+      });
+
+      onSearch(formattedResults);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      onSearch([]); // Send empty array on error
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -202,7 +224,7 @@ const Hero = ({ onSearch, hasSearched }) => {
             }}
           >
               <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-              <Grid xs={12} md={4}>
+              <Grid sx={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -250,7 +272,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                 />
               </Grid>
 
-              <Grid xs={12} md={4}>
+              <Grid sx={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -298,7 +320,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                 />
               </Grid>
 
-              <Grid xs={12} md={4}>
+              <Grid sx={{ xs: 12, md: 4 }}>
                 <TextField
                   fullWidth
                   variant="outlined"

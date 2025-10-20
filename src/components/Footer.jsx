@@ -77,7 +77,7 @@ const Footer = () => {
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 10, px: { xs: 2, sm: 3, lg: 4 } }}>
         <Grid container spacing={4} sx={{ py: 6, borderBottom: '1px solid', borderColor: theme.palette.grey[700] }}>
           {/* Brand Section */}
-          <Grid item xs={12} md={4}>
+          <Grid sx={{ xs: 12, md: 4 }}>
             <motion.div whileHover={{ scale: 1.05 }}>
               <Box sx={{ display: 'flex', alignItems: 'center', color: 'white', mb: 2 }}>
                 <Box
@@ -126,7 +126,7 @@ const Footer = () => {
           </Grid>
 
           {/* Quick Links */}
-          <Grid item xs={12} md={4}>
+          <Grid sx={{ xs: 12, md: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', mb: 2 }}>
               Explore
             </Typography>
@@ -168,7 +168,7 @@ const Footer = () => {
           </Grid>
 
           {/* Support */}
-          <Grid item xs={12} md={4}>
+          <Grid sx={{ xs: 12, md: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', mb: 2 }}>
               Support
             </Typography>
@@ -210,7 +210,7 @@ const Footer = () => {
           </Grid>
 
           {/* Newsletter */}
-          <Grid item xs={12} md={4}>
+          <Grid sx={{ xs: 12, md: 4 }}>
             <Typography variant="h6" sx={{ fontWeight: 'bold', color: 'white', mb: 2 }}>
               Stay Updated
             </Typography>

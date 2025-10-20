@@ -46,48 +46,81 @@ Ensure you have Node.js (version 18 or higher) and npm installed.
 
 ## Running the Application
 
-To start the development server and view the application in your browser:
+To run the application, you need to start both the backend server and the frontend development server.
 
-```bash
-npm run dev
-```
+### Backend (Flask)
 
-The application will typically be available at `http://localhost:5173/`.
+1.  **Navigate to the backend directory:**
+    ```bash
+    cd backend
+    ```
+
+2.  **Create and activate a Python virtual environment:**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    ```
+    *(On Windows, use `venv\Scripts\activate`)*
+
+3.  **Install the required dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+4.  **Configure your API keys:**
+    -   Open the `backend/.env` file and add your API key from [openrouteservice.org](https://openrouteservice.org).
+    ```
+    OPENROUTESERVICE_API_KEY='your_openrouteservice_key_here'
+    ```
+
+5.  **Start the Flask server:**
+    ```bash
+    export FLASK_APP=app.py
+    flask run --port 5001
+    ```
+    The backend server will be running at `http://localhost:5001`.
+
+### Frontend (React)
+
+1.  **From the project root directory, install dependencies (if you haven't already):**
+    ```bash
+    npm install
+    ```
+
+2.  **Start the Vite development server:**
+    ```bash
+    npm run dev
+    ```
+    The frontend application will be available at `http://localhost:5173`. Open this URL in your browser.
 
 ## Project Structure
 
 ```
-tourism-app/
-├── public/
+/ (capstone-frontend)
+├── backend/
+│   ├── app.py
+│   ├── destinations.json
+│   ├── requirements.txt
+│   └── .env
 ├── src/
 │   ├── assets/
 │   ├── components/
-│   │   ├── ContentRow.jsx
-│   │   ├── Footer.jsx
-│   │   ├── Header.jsx
-│   │   ├── Hero.jsx
-│   │   ├── SearchResults.jsx
-│   │   └── Sidebar.jsx
-│   ├── App.css
+│   │   ├── ... (many existing components for auth, layout, etc.)
+│   │   ├── ClimateTravelPage.jsx
+│   │   ├── MapView.jsx
+│   │   └── SearchForm.jsx
 │   ├── App.jsx
-│   ├── index.css
 │   └── main.jsx
-├── .gitignore
-├── eslint.config.js
-├── index.html
-├── package-lock.json
 ├── package.json
-├── README.md
-├── vite.config.js
-└── ... (other configuration files)
+└── README.md
 ```
 
 ## Future Enhancements
 
--   **Routing:** Implement `react-router-dom` for dedicated detail pages for each destination.
--   **Backend Integration:** Connect to a real API for dynamic destination data and user authentication.
--   **Advanced Search Filters:** Add more sophisticated filtering options for climate, activities, etc.
--   **User Accounts:** Implement full user authentication, favoriting, and personalized recommendations.
+-   **Advanced Search Filters:** Add more sophisticated filtering options for climate, activities, etc. on the Climate Travel page.
+-   **Expanded Dataset:** Replace the sample `destinations.json` with a larger, real-world dataset of destinations.
+-   **Live Climate Data:** Integrate with a live climate data API like Open-Meteo.
+-   **User Profile Integration:** Connect the Climate Travel feature with user profiles to save favorite climate searches or destinations.
 -   **Theming:** Expand the dark mode functionality and allow users to customize themes.
 -   **Accessibility:** Further improve accessibility features.
 

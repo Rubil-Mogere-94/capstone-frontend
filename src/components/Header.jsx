@@ -70,14 +70,18 @@ const Header = () => {
             <Button color="inherit" component={Link} to="/explore" sx={{ fontWeight: 'bold' }}>
               Explore
             </Button>
-            <Button color="inherit" component={Link} to="/destinations" sx={{ fontWeight: 'bold' }}>
-              Destinations
-            </Button>
+            
             <Button color="inherit" component={Link} to="/favorites" sx={{ fontWeight: 'bold' }}>
               Favorites
             </Button>
             <Button color="inherit" component={Link} to="/profile" sx={{ fontWeight: 'bold' }}>
               Profile
+            </Button>
+            <Button color="inherit" component={Link} to="/itinerary-planner" sx={{ fontWeight: 'bold' }}>
+              Itinerary Planner
+            </Button>
+            <Button color="inherit" component={Link} to="/community-forum" sx={{ fontWeight: 'bold' }}>
+              Community Forum
             </Button>
           </Box>
 

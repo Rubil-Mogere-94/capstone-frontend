@@ -52,11 +52,7 @@ const ContentRow = ({ title, destinations }) => {
             p: 2,
           }}
         >
-          {destinations.map((destination, index) => (
-            <Box key={index} sx={{ flexShrink: 0, width: { xs: '80%', sm: '50%', md: '33.33%', lg: '25%' } }}>
-              <ResultCard destination={destination} index={index} />
-            </Box>
-          ))}
+          {destinations}
         </Box>
         <IconButton
           onClick={() => scroll('right')}

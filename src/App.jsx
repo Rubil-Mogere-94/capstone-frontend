@@ -8,12 +8,19 @@ import AuthDetails from './components/AuthDetails';
 import ForgotPassword from './components/ForgotPassword';
 import ExplorePage from './components/ExplorePage';
 import ProfilePage from './components/ProfilePage';
-import DestinationsPage from './components/DestinationsPage';
+
 import FavoritesPage from './components/FavoritesPage';
+import ClimateTravelPage from './components/ClimateTravelPage';
+import ItineraryPlannerPage from './components/ItineraryPlannerPage';
+import CommunityForumPage from './components/CommunityForumPage';
+
 import { Box, CssBaseline } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import app from './firebase';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 const Main = styled('main')(({ theme }) => ({
   flexGrow: 1,
@@ -32,8 +39,12 @@ const AuthenticatedLayout = () => {
       <Routes>
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/destinations" element={<DestinationsPage />} />
+        
+        
         <Route path="/favorites" element={<FavoritesPage />} />
+        <Route path="/climate-travel" element={<ClimateTravelPage />} />
+        <Route path="/itinerary-planner" element={<ItineraryPlannerPage />} />
+        <Route path="/community-forum" element={<CommunityForumPage />} />
         <Route path="*" element={<Navigate to="/explore" replace />} />
       </Routes>
     </Main>
@@ -85,48 +96,50 @@ function App() {
   }
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
-      <CssBaseline />
-      <Routes>
-        {/* Authentication routes */}
-        <Route
-          path="/signin"
-          element={
-            <AuthLayout>
-              <SignIn />
-            </AuthLayout>
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            <AuthLayout>
-              <SignUp />
-            </AuthLayout>
-          }
-        />
-        <Route
-          path="/forgot-password"
-          element={
-            <AuthLayout>
-              <ForgotPassword />
-            </AuthLayout>
-          }
-        />
-
-        {/* Authenticated user routes */}
-        {user ? (
+    <QueryClientProvider client={queryClient}>
+      <Box sx={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
+        <CssBaseline />
+        <Routes>
+          {/* Authentication routes */}
           <Route
-            path="/*"
+            path="/signin"
             element={
-              <AuthenticatedLayout />
+              <AuthLayout>
+                <SignIn />
+              </AuthLayout>
             }
           />
-        ) : (
-          <Route path="/*" element={<Navigate to="/signin" replace />} />
-        )}
-      </Routes>
-    </Box>
+          <Route
+            path="/signup"
+            element={
+              <AuthLayout>
+                <SignUp />
+              </AuthLayout>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <AuthLayout>
+                <ForgotPassword />
+              </AuthLayout>
+            }
+          />
+
+          {/* Authenticated user routes */}
+          {user ? (
+            <Route
+              path="/*"
+              element={
+                <AuthenticatedLayout />
+              }
+            />
+          ) : (
+            <Route path="/*" element={<Navigate to="/signin" replace />} />
+          )}
+        </Routes>
+      </Box>
+    </QueryClientProvider>
   );
 }
 

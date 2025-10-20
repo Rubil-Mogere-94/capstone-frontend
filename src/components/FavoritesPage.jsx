@@ -1,4 +1,6 @@
-import React from 'react';
+import { API_BASE_URL } from '../config';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   Box,
   Typography,
@@ -8,36 +10,43 @@ import {
   CardMedia,
   CardContent,
   Button,
-  IconButton,
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-const dummyFavorites = [
-  {
-    id: 1,
-    name: 'Santorini',
-    country: 'Greece',
-    imageUrl: 'https://source.unsplash.com/random/600x400?santorini,island',
-  },
-  {
-    id: 2,
-    name: 'Kyoto',
-    country: 'Japan',
-    imageUrl: 'https://source.unsplash.com/random/600x400?kyoto,temple',
-  },
-  {
-    id: 3,
-    name: 'Bora Bora',
-    country: 'French Polynesia',
-    imageUrl: 'https://source.unsplash.com/random/600x400?borabora,beach',
-  },
-];
-
 const FavoritesPage = () => {
-  const handleDelete = (id) => {
-    console.log(`Deleting favorite with ID: ${id}`);
-    // Future: Implement actual delete logic here
+  const [favorites, setFavorites] = useState([]);
+
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/api/favorites`);
+      const favoritesWithImages = response.data.map(dest => {
+        const [city, country] = dest.name.split(', ');
+        return {
+          ...dest,
+          city,
+          country,
+          imageUrl: `https://source.unsplash.com/random/600x400?${city.toLowerCase()},city`
+        };
+      });
+      setFavorites(favoritesWithImages);
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFavorites();
+  }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/api/favorites/${id}`);
+      // Refresh the list of favorites after deletion
+      fetchFavorites();
+    } catch (error) {
+      console.error('Error deleting favorite:', error);
+    }
   };
 
   return (
@@ -50,18 +59,18 @@ const FavoritesPage = () => {
       </Typography>
 
       <Grid container spacing={4}>
-        {dummyFavorites.map((destination) => (
-          <Grid item key={destination.id} xs={12} sm={6} md={4}>
+        {favorites.map((destination) => (
+          <Grid sx={{ xs: 12, sm: 6, md: 4 }}>
             <Card sx={{ borderRadius: '16px', boxShadow: 3, '&:hover': { boxShadow: 6 } }}>
               <CardMedia
                 component="img"
                 height="192"
                 image={destination.imageUrl}
-                alt={destination.name}
+                alt={destination.city}
               />
               <CardContent>
                 <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-                  {destination.name}
+                  {destination.city}
                 </Typography>
                 <Box sx={{ display: 'flex', alignItems: 'center', color: 'text.secondary', mb: 2 }}>
                   <LocationOnIcon sx={{ fontSize: 16, mr: 0.5 }} />
