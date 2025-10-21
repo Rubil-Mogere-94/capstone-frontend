@@ -83,6 +83,9 @@ const Header = () => {
             <Button color="inherit" component={Link} to="/community-forum" sx={{ fontWeight: 'bold' }}>
               Community Forum
             </Button>
+            <Button color="inherit" component={Link} to="/recommendations" sx={{ fontWeight: 'bold' }}>
+              AI Recommendations
+            </Button>
           </Box>
 
           {/* Right Section - User Actions */}

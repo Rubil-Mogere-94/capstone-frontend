@@ -13,6 +13,7 @@ import FavoritesPage from './components/FavoritesPage';
 import ClimateTravelPage from './components/ClimateTravelPage';
 import ItineraryPlannerPage from './components/ItineraryPlannerPage';
 import CommunityForumPage from './components/CommunityForumPage';
+import RecommendationPage from './components/RecommendationPage';
 
 import { Box, CssBaseline } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -45,6 +46,7 @@ const AuthenticatedLayout = () => {
         <Route path="/climate-travel" element={<ClimateTravelPage />} />
         <Route path="/itinerary-planner" element={<ItineraryPlannerPage />} />
         <Route path="/community-forum" element={<CommunityForumPage />} />
+        <Route path="/recommendations" element={<RecommendationPage />} />
         <Route path="*" element={<Navigate to="/explore" replace />} />
       </Routes>
     </Main>
