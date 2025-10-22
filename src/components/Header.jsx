@@ -71,9 +71,7 @@ const Header = () => {
               Explore
             </Button>
             
-            <Button color="inherit" component={Link} to="/favorites" sx={{ fontWeight: 'bold' }}>
-              Favorites
-            </Button>
+            
             <Button color="inherit" component={Link} to="/profile" sx={{ fontWeight: 'bold' }}>
               Profile
             </Button>
