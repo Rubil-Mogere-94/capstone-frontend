@@ -170,7 +170,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                   component="span"
                   sx={{ display: 'block', mt: 1, fontSize: '1.125rem', color: 'white' }} // Changed to white
                 >
-                  Search by location, dates, and travel preferences.
+                  Search by location.
                 </Typography>
               </Typography>
             </motion.div>
