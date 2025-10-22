@@ -99,16 +99,7 @@ const Header = () => {
             
             
             
-            <Avatar 
-              sx={{ 
-                width: 32, 
-                height: 32, 
-                bgcolor: 'primary.main',
-                fontSize: '0.875rem'
-              }}
-            >
-              T
-            </Avatar>
+           
           </Box>
         </Toolbar>
       </Container>
