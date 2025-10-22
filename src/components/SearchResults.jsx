@@ -20,7 +20,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // new icon
 import { useNavigate } from 'react-router-dom'; // ✅ for navigation
 import MapComponent from './MapComponent';
 import { GradientButton } from './common/GradientButton';
-import { FilterSection } from './SearchResults/FilterSection';
 
 
 export const ResultCard = ({ destination, index }) => {
@@ -110,30 +109,10 @@ const SearchResults = ({ results }) => {
   const [mapMarkers, setMapMarkers] = useState([]);
   const [mapCenter, setMapCenter] = useState([0, 0]);
   const [mapZoom, setMapZoom] = useState(2);
-  const [activeFilters, setActiveFilters] = useState([]);
-
-  
-  
-  const handleFilterClick = (category) => {
-    setActiveFilters((prevFilters) =>
-      prevFilters.includes(category)
-        ? prevFilters.filter((f) => f !== category)
-        : [...prevFilters, category]
-    );
-  };
-
-  const filteredResults = useMemo(() => {
-    if (activeFilters.length === 0) return results;
-    return results.filter((destination) =>
-      activeFilters.some((filter) =>
-        destination.name.toLowerCase().includes(filter.toLowerCase())
-      )
-    );
-  }, [results, activeFilters]);
 
   useEffect(() => {
-    if (filteredResults?.length > 0) {
-      const newMarkers = filteredResults.map(destination => ({
+    if (results?.length > 0) {
+      const newMarkers = results.map(destination => ({
         position: [destination.lat, destination.lon],
         data: destination,
       }));
@@ -143,7 +122,7 @@ const SearchResults = ({ results }) => {
         setMapZoom(5);
       }
     }
-  }, [filteredResults]);
+  }, [results]);
 
   
 
@@ -181,11 +160,9 @@ const SearchResults = ({ results }) => {
             Explore Destinations
           </Typography>
           <Typography variant="body1" sx={{ color: 'grey.600', maxWidth: 768, mx: 'auto' }}>
-            Discover destinations matching your climate preferences.
+            Discover multiple locations around the world.
           </Typography>
         </motion.div>
-
-        <FilterSection activeFilters={activeFilters} onFilterClick={handleFilterClick} />
 
         {mapMarkers.length > 0 && (
           <Box sx={{ mb: 4 }}>
@@ -196,7 +173,7 @@ const SearchResults = ({ results }) => {
         <AnimatePresence>
           <motion.div layout>
             <Grid container spacing={4}>
-              {filteredResults.map((destination, index) => (
+              {results.map((destination, index) => (
                 <Grid item key={destination.id} xs={12} sm={6} md={4}>
                   <ResultCard destination={destination} index={index} />
                 </Grid>
