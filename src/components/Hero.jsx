@@ -10,8 +10,6 @@ import {
   Grid,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import GroupIcon from '@mui/icons-material/Group';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled, useTheme } from '@mui/material/styles'; // Import useTheme
 import { GradientButton } from './common/GradientButton';
@@ -30,8 +28,6 @@ const GradientText = styled(Typography)(({ theme }) => ({
 const Hero = ({ onSearch, hasSearched }) => {
   const theme = useTheme(); // Access theme
   const [location, setLocation] = useState('');
-  const [dates, setDates] = useState('');
-  const [guests, setGuests] = useState('');
 
   const handleSearch = async () => {
     if (!location) {
@@ -219,7 +215,7 @@ const Hero = ({ onSearch, hasSearched }) => {
             }}
           >
               <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -261,102 +257,6 @@ const Hero = ({ onSearch, hasSearched }) => {
                     startAdornment: (
                       <InputAdornment position="start" sx={{ position: 'absolute', left: 16, color: theme.palette.primary.main, zIndex: 10 }}>
                         <LocationOnIcon sx={{ fontSize: 20 }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="When? (e.g., March-April)"
-                  value={dates}
-                  onChange={(e) => setDates(e.target.value)}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '12px',
-                      backgroundColor: 'rgba(249, 250, 251, 0.8)',
-                      '& fieldset': {
-                        borderColor: 'grey.200',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.light,
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: theme.palette.primary.main,
-                        boxShadow: `0 0 0 2px ${theme.palette.primary.light}`,
-                      },
-                    },
-                    '& .MuiInputBase-input': {
-                      pl: 5,
-                      py: 2,
-                      color: 'grey.800',
-                      '&::placeholder': {
-                        color: 'grey.500',
-                        opacity: 1,
-                      },
-                    },
-                    boxShadow: 1,
-                    '&:hover': {
-                      backgroundColor: 'white',
-                      boxShadow: 3,
-                    },
-                    transition: 'all 300ms',
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start" sx={{ position: 'absolute', left: 16, color: theme.palette.primary.main, zIndex: 10 }}>
-                        <CalendarTodayIcon sx={{ fontSize: 20 }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} md={4}>
-                <TextField
-                  fullWidth
-                  variant="outlined"
-                  placeholder="Who? (e.g., 2 adults)"
-                  value={guests}
-                  onChange={(e) => setGuests(e.target.value)}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: '12px',
-                      backgroundColor: 'rgba(249, 250, 251, 0.8)',
-                      '& fieldset': {
-                        borderColor: 'grey.200',
-                      },
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.light,
-                      },
-                      '&.Mui-focused fieldset': {
-                        borderColor: theme.palette.primary.main,
-                        boxShadow: `0 0 0 2px ${theme.palette.primary.light}`,
-                      },
-                    },
-                    '& .MuiInputBase-input': {
-                      pl: 5,
-                      py: 2,
-                      color: 'grey.800',
-                      '&::placeholder': {
-                        color: 'grey.500',
-                        opacity: 1,
-                      },
-                    },
-                    boxShadow: 1,
-                    '&:hover': {
-                      backgroundColor: 'white',
-                      boxShadow: 3,
-                    },
-                    transition: 'all 300ms',
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start" sx={{ position: 'absolute', left: 16, color: theme.palette.primary.main, zIndex: 10 }}>
-                        <GroupIcon sx={{ fontSize: 20 }} />
                       </InputAdornment>
                     ),
                   }}
