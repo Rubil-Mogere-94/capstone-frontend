@@ -4,12 +4,10 @@ import { motion } from 'framer-motion';
 import {
   Box,
   Typography,
-  Button,
   TextField,
   InputAdornment,
   Container,
   Grid,
-  CircularProgress,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -17,6 +15,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { styled, useTheme } from '@mui/material/styles'; // Import useTheme
 import { GradientButton } from './common/GradientButton';
+import axios from 'axios';
 
 const GradientText = styled(Typography)(({ theme }) => ({
   background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.info.main} 90%)`,
@@ -24,7 +23,7 @@ const GradientText = styled(Typography)(({ theme }) => ({
   WebkitTextFillColor: 'transparent',
 }));
 
-import axios from 'axios';
+
 
 // ... (rest of the imports)
 
@@ -33,14 +32,12 @@ const Hero = ({ onSearch, hasSearched }) => {
   const [location, setLocation] = useState('');
   const [dates, setDates] = useState('');
   const [guests, setGuests] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
     if (!location) {
       onSearch([]);
       return;
     }
-    setLoading(true);
     try {
       const response = await axios.get(`${API_BASE_URL}/api/search?q=${location}`);
       const results = response.data;
@@ -90,8 +87,6 @@ const Hero = ({ onSearch, hasSearched }) => {
     } catch (error) {
       console.error("Error fetching search results:", error);
       onSearch([]); // Send empty array on error
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -224,7 +219,7 @@ const Hero = ({ onSearch, hasSearched }) => {
             }}
           >
               <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-              <Grid sx={{ xs: 12, md: 4 }}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -272,7 +267,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                 />
               </Grid>
 
-              <Grid sx={{ xs: 12, md: 4 }}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   fullWidth
                   variant="outlined"
@@ -320,7 +315,7 @@ const Hero = ({ onSearch, hasSearched }) => {
                 />
               </Grid>
 
-              <Grid sx={{ xs: 12, md: 4 }}>
+              <Grid item xs={12} md={4}>
                 <TextField
                   fullWidth
                   variant="outlined"

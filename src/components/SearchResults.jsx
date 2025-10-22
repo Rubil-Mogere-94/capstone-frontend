@@ -1,6 +1,4 @@
-import { API_BASE_URL } from '../config';
 import React, { useState, useEffect, useMemo } from 'react';
-import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Box,
@@ -10,24 +8,20 @@ import {
   CardMedia,
   CardContent,
   IconButton,
-  Chip,
-  CircularProgress,
   Container,
   Grid,
-  Stack,
 } from '@mui/material';
-import ThermostatIcon from '@mui/icons-material/Thermostat';
-import CloudIcon from '@mui/icons-material/Cloud';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // new icon
-import { styled } from '@mui/material/styles';
+
+
+
 import { useNavigate } from 'react-router-dom'; // ✅ for navigation
-import ContentRow from './ContentRow';
 import MapComponent from './MapComponent';
 import { GradientButton } from './common/GradientButton';
 import { FilterSection } from './SearchResults/FilterSection';
-import { useQueryClient } from '@tanstack/react-query';
+
 
 export const ResultCard = ({ destination, index }) => {
   const { id, name, country, temperature, precipitation } = destination;
@@ -151,8 +145,9 @@ const SearchResults = ({ results }) => {
     }
   }, [filteredResults]);
 
-  const popularDestinations = filteredResults.slice(0, 3);
-  const recommendedForYou = filteredResults.slice(1, 4);
+  
+
+  
 
   return (
     <Box
@@ -163,6 +158,8 @@ const SearchResults = ({ results }) => {
       }}
     >
       <Container maxWidth="lg">
+        
+
         {/* ✅ Back to Home Button */}
         <Box sx={{ mb: 3 }}>
           <Button
@@ -174,7 +171,6 @@ const SearchResults = ({ results }) => {
             Back to Home
           </Button>
         </Box>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -199,8 +195,13 @@ const SearchResults = ({ results }) => {
 
         <AnimatePresence>
           <motion.div layout>
-            <ContentRow title="Popular Destinations" destinations={popularDestinations.map((dest, index) => <ResultCard key={dest.id} destination={dest} index={index} />)} />
-            <ContentRow title="Recommended for You" destinations={recommendedForYou.map((dest, index) => <ResultCard key={dest.id} destination={dest} index={index} />)} />
+            <Grid container spacing={4}>
+              {filteredResults.map((destination, index) => (
+                <Grid item key={destination.id} xs={12} sm={6} md={4}>
+                  <ResultCard destination={destination} index={index} />
+                </Grid>
+              ))}
+            </Grid>
           </motion.div>
         </AnimatePresence>
       </Container>
