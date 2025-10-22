@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, Container, Paper, Button, Dialog, DialogTitle, DialogContent } from '@mui/material';
 import { motion } from 'framer-motion';
+import Header from './Header'; // ✅ import your Header component
 import ItineraryList from './ItineraryPlanner/ItineraryList';
 import ItineraryForm from './ItineraryPlanner/ItineraryForm';
 
@@ -37,66 +38,75 @@ const ItineraryPlannerPage = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        style={{ textAlign: 'center', marginBottom: 48 }}
-      >
-        <Typography variant="h4" component="h1" sx={{ fontWeight: 'bold', color: 'secondary.main', mb: 1 }}>
-          Travel Itinerary Planner
-        </Typography>
-        <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto' }}>
-          Plan your climate-smart adventures, day by day.
-        </Typography>
-      </motion.div>
+    <>
+      {/* ✅ Add the header here so it appears at the top */}
+      <Header />
 
-      <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => setOpenForm(true)}
-          sx={{
-            borderRadius: '20px',
-            px: 3,
-            py: 1.5,
-            fontWeight: 'bold',
-            boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
-            '&:hover': { boxShadow: '0 6px 15px rgba(0, 0, 0, 0.2)' },
-          }}
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          style={{ textAlign: 'center', marginBottom: 48 }}
         >
-          Create New Itinerary
-        </Button>
-      </Box>
-
-      <Paper elevation={6} sx={{ p: 3, borderRadius: '16px', bgcolor: 'background.paper' }}>
-        {itineraries.length === 0 ? (
-          <Typography variant="h6" align="center" color="text.secondary" sx={{ py: 4 }}>
-            No itineraries planned yet. Start by creating one!
+          <Typography
+            variant="h4"
+            component="h1"
+            sx={{ fontWeight: 'bold', color: 'secondary.main', mb: 1 }}
+          >
+            Travel Itinerary Planner
           </Typography>
-        ) : (
-          <ItineraryList
-            itineraries={itineraries}
-            onEdit={startEdit}
-            onDelete={handleDeleteItinerary}
-          />
-        )}
-      </Paper>
+          <Typography variant="body1" sx={{ color: 'text.secondary', maxWidth: 600, mx: 'auto' }}>
+            Plan your climate-smart adventures, day by day.
+          </Typography>
+        </motion.div>
 
-      <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="sm">
-        <DialogTitle sx={{ bgcolor: 'secondary.main', color: 'white', pb: 1 }}>
-          {editingItinerary ? 'Edit Itinerary' : 'Create New Itinerary'}
-        </DialogTitle>
-        <DialogContent sx={{ pt: 2 }}>
-          <ItineraryForm
-            onSubmit={editingItinerary ? handleEditItinerary : handleAddItinerary}
-            initialData={editingItinerary}
-            onCancel={handleCloseForm}
-          />
-        </DialogContent>
-      </Dialog>
-    </Container>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 3 }}>
+          <Button
+            variant="contained"
+            color="secondary"
+            onClick={() => setOpenForm(true)}
+            sx={{
+              borderRadius: '20px',
+              px: 3,
+              py: 1.5,
+              fontWeight: 'bold',
+              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.1)',
+              '&:hover': { boxShadow: '0 6px 15px rgba(0, 0, 0, 0.2)' },
+            }}
+          >
+            Create New Itinerary
+          </Button>
+        </Box>
+
+        <Paper elevation={6} sx={{ p: 3, borderRadius: '16px', bgcolor: 'background.paper' }}>
+          {itineraries.length === 0 ? (
+            <Typography variant="h6" align="center" color="text.secondary" sx={{ py: 4 }}>
+              No itineraries planned yet. Start by creating one!
+            </Typography>
+          ) : (
+            <ItineraryList
+              itineraries={itineraries}
+              onEdit={startEdit}
+              onDelete={handleDeleteItinerary}
+            />
+          )}
+        </Paper>
+
+        <Dialog open={openForm} onClose={handleCloseForm} fullWidth maxWidth="sm">
+          <DialogTitle sx={{ bgcolor: 'secondary.main', color: 'white', pb: 1 }}>
+            {editingItinerary ? 'Edit Itinerary' : 'Create New Itinerary'}
+          </DialogTitle>
+          <DialogContent sx={{ pt: 2 }}>
+            <ItineraryForm
+              onSubmit={editingItinerary ? handleEditItinerary : handleAddItinerary}
+              initialData={editingItinerary}
+              onCancel={handleCloseForm}
+            />
+          </DialogContent>
+        </Dialog>
+      </Container>
+    </>
   );
 };
 

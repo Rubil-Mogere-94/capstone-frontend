@@ -12,6 +12,7 @@ import {
   styled
 } from '@mui/material';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
+import Header from './Header'; // ✅ Import your Header component
 
 const GradientButton = styled(Button)(({ theme }) => ({
   background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
@@ -40,7 +41,6 @@ const RecommendationPage = () => {
   const [error, setError] = useState('');
 
   const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-
   const genAI = new GoogleGenerativeAI(API_KEY);
 
   const getRecommendations = async () => {
@@ -65,55 +65,74 @@ const RecommendationPage = () => {
   };
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Paper elevation={6} sx={{ p: { xs: 2, md: 4 }, borderRadius: 3, mb: 4, bgcolor: 'background.paper' }}>
-        <Typography variant="h4" component="h1" gutterBottom align="center" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-          <TravelExploreIcon sx={{ fontSize: 40, verticalAlign: 'middle', mr: 1 }} />
-          Sustainable Travel AI
-        </Typography>
-        <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 3 }}>
-          Tell us your travel preferences, and our AI will suggest unique, less-crowded destinations with minimal environmental impact.
-        </Typography>
+    <>
+      {/* ✅ Header at the top of the page */}
+      <Header />
 
-        <TextField
-          label="Your Travel Preferences"
-          multiline
-          rows={5}
-          fullWidth
-          variant="outlined"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="e.g., 'I love hiking and nature, looking for a quiet escape in Europe.' or 'Interested in cultural experiences in Asia, avoiding crowded tourist spots.'"
-          sx={{ mb: 3 }}
-        />
-
-        <GradientButton
-          onClick={getRecommendations}
-          disabled={loading || !prompt.trim()}
-          fullWidth
-          startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <TravelExploreIcon />}
-        >
-          {loading ? 'Generating Recommendations...' : 'Get AI Recommendations'}
-        </GradientButton>
-      </Paper>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 3 }}>
-          {error}
-        </Alert>
-      )}
-
-      {recommendations && (
-        <Paper elevation={6} sx={{ p: { xs: 2, md: 4 }, borderRadius: 3, bgcolor: 'background.paper' }}>
-          <Typography variant="h5" component="h2" gutterBottom sx={{ fontWeight: 'bold', color: 'secondary.main' }}>
-            Our AI's Sustainable Suggestions:
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Paper elevation={6} sx={{ p: { xs: 2, md: 4 }, borderRadius: 3, mb: 4, bgcolor: 'background.paper' }}>
+          <Typography
+            variant="h4"
+            component="h1"
+            gutterBottom
+            align="center"
+            sx={{ fontWeight: 'bold', color: 'primary.main' }}
+          >
+            <TravelExploreIcon sx={{ fontSize: 40, verticalAlign: 'middle', mr: 1 }} />
+            Sustainable Travel AI
           </Typography>
-          <Box sx={{ whiteSpace: 'pre-wrap' }}>
-            {recommendations}
-          </Box>
+
+          <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 3 }}>
+            Tell us your travel preferences, and our AI will suggest unique, less-crowded destinations
+            with minimal environmental impact.
+          </Typography>
+
+          <TextField
+            label="Your Travel Preferences"
+            multiline
+            rows={5}
+            fullWidth
+            variant="outlined"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="e.g., 'I love hiking and nature, looking for a quiet escape in Europe.' or 'Interested in cultural experiences in Asia, avoiding crowded tourist spots.'"
+            sx={{ mb: 3 }}
+          />
+
+          <GradientButton
+            onClick={getRecommendations}
+            disabled={loading || !prompt.trim()}
+            fullWidth
+            startIcon={loading ? <CircularProgress size={20} color="inherit" /> : <TravelExploreIcon />}
+          >
+            {loading ? 'Generating Recommendations...' : 'Get AI Recommendations'}
+          </GradientButton>
         </Paper>
-      )}
-    </Container>
+
+        {error && (
+          <Alert severity="error" sx={{ mb: 3 }}>
+            {error}
+          </Alert>
+        )}
+
+        {recommendations && (
+          <Paper
+            elevation={6}
+            sx={{ p: { xs: 2, md: 4 }, borderRadius: 3, bgcolor: 'background.paper' }}
+          >
+            <Typography
+              variant="h5"
+              component="h2"
+              gutterBottom
+              sx={{ fontWeight: 'bold', color: 'secondary.main' }}
+            >
+              Our AI's Sustainable Suggestions:
+            </Typography>
+            <Box sx={{ whiteSpace: 'pre-wrap' }}>{recommendations}</Box>
+          </Paper>
+        )}
+      </Container>
+    </>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, Grid } from '@mui/material';
 import { motion } from 'framer-motion';
 
+
 const ItineraryForm = ({ onSubmit, initialData, onCancel }) => {
   const [title, setTitle] = useState('');
   const [destination, setDestination] = useState('');
@@ -43,7 +44,9 @@ const ItineraryForm = ({ onSubmit, initialData, onCancel }) => {
   };
 
   return (
+    
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+        
       <Grid container spacing={3}>
         <Grid sx={{ xs: 12 }}>
           <motion.div variants={inputFieldVariants} initial="hidden" animate="visible" transition={{ delay: 0.1 }}>

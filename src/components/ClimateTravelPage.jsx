@@ -2,6 +2,7 @@ import { API_BASE_URL } from '../config';
 import React, { useState } from "react";
 import SearchForm from "./SearchForm";
 import MapView from "./MapView";
+import Header from "./Header"; // ✅ Import your Header component
 import axios from "axios";
 
 function ClimateTravelPage() {
@@ -27,7 +28,7 @@ function ClimateTravelPage() {
       } else if (err.request) {
         console.error("Error request:", err.request);
       } else {
-        console.error('Error message:', err.message);
+        console.error("Error message:", err.message);
       }
       alert("Search failed. Check the browser console for more details.");
     }
@@ -40,7 +41,6 @@ function ClimateTravelPage() {
       console.log("Requesting route from:", start, "to:", end);
       const res = await axios.post(`${API_BASE_URL}/api/route`, { start, end });
       console.log("Route response:", res.data);
-      const geojson = res.data.geojson || (res.data.data && res.data.data.trip);
       setSelectedDestination({ ...dest, routeGeoJSON: res.data.geojson || res.data.data });
     } catch (err) {
       console.error("Routing failed:", err);
@@ -51,45 +51,52 @@ function ClimateTravelPage() {
       } else if (err.request) {
         console.error("Error request:", err.request);
       } else {
-        console.error('Error message:', err.message);
+        console.error("Error message:", err.message);
       }
       alert("Routing failed. Check backend/config and browser console.");
     }
   };
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "380px 1fr", height: "100vh" }}>
-      <aside style={{ padding: 16, borderRight: "1px solid #eee" }}>
-        <h2>Climate Travel</h2>
-        <p>Pick a month and preferred temperature range, then search.</p>
-        <SearchForm onSearch={handleSearch} />
-        <div style={{ marginTop: 12 }}>
-          <h3>Recommendations</h3>
-          {recommendations.length === 0 && <p>No recommendations yet.</p>}
-          <ul>
-            {recommendations.map((r) => (
-              <li key={r.id} style={{ marginBottom: 8 }}>
-                <strong>{r.name}</strong><br />
-                {r.temp}°C • {r.precip}mm<br />
-                <button onClick={() => handleGetRoute(r)} style={{ marginTop: 6 }}>Show route</button>
-              </li>
-            ))}
-          </ul>
-          <div style={{ marginTop: 10, whiteSpace: "pre-line" }}>
-            <strong>Explanation</strong>
-            <p>{explanation}</p>
-          </div>
-        </div>
-      </aside>
+    <>
+      {/* ✅ Add Header here */}
+      <Header />
 
-      <main>
-        <MapView
-          userLocation={userLocation}
-          destination={selectedDestination}
-          recommendations={recommendations}
-        />
-      </main>
-    </div>
+      <div style={{ display: "grid", gridTemplateColumns: "380px 1fr", height: "100vh" }}>
+        <aside style={{ padding: 16, borderRight: "1px solid #eee" }}>
+          <h2>Climate Travel</h2>
+          <p>Pick a month and preferred temperature range, then search.</p>
+          <SearchForm onSearch={handleSearch} />
+
+          <div style={{ marginTop: 12 }}>
+            <h3>Recommendations</h3>
+            {recommendations.length === 0 && <p>No recommendations yet.</p>}
+            <ul>
+              {recommendations.map((r) => (
+                <li key={r.id} style={{ marginBottom: 8 }}>
+                  <strong>{r.name}</strong><br />
+                  {r.temp}°C • {r.precip}mm<br />
+                  <button onClick={() => handleGetRoute(r)} style={{ marginTop: 6 }}>Show route</button>
+                </li>
+              ))}
+            </ul>
+
+            <div style={{ marginTop: 10, whiteSpace: "pre-line" }}>
+              <strong>Explanation</strong>
+              <p>{explanation}</p>
+            </div>
+          </div>
+        </aside>
+
+        <main>
+          <MapView
+            userLocation={userLocation}
+            destination={selectedDestination}
+            recommendations={recommendations}
+          />
+        </main>
+      </div>
+    </>
   );
 }
 
