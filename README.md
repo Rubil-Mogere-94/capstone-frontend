@@ -1,4 +1,4 @@
-# Eco-Travel Planner
+# Klymates
 
 Welcome to the Eco-Travel Planner, a web application designed to help you plan your travels with sustainability in mind. This frontend is built with React and Vite, and it's packed with features to make your travel planning seamless and eco-friendly.
 
