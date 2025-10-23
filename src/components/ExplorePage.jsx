@@ -1,18 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from './Hero';
 import SearchResults from './SearchResults';
 import Header from './Header';
 import Footer from './Footer';
-
 import { Box } from '@mui/material';
 
 const ExplorePage = () => {
   const [hasSearched, setHasSearched] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
+  // ✅ Monitor network status
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // ✅ Restore search results if offline
+  useEffect(() => {
+    if (!isOnline) {
+      const stored = localStorage.getItem('exploreSearchResults');
+      if (stored) {
+        const data = JSON.parse(stored);
+        setSearchResults(data);
+        setHasSearched(true);
+      }
+    }
+  }, [isOnline]);
+
+  // ✅ Called when search completes
   const handleSearch = (results) => {
     setSearchResults(results);
     setHasSearched(true);
+
+    // Save results locally for offline restore
+    localStorage.setItem('exploreSearchResults', JSON.stringify(results));
+
+    // Smooth scroll to results
     setTimeout(() => {
       document.getElementById('search-results')?.scrollIntoView({
         behavior: 'smooth',

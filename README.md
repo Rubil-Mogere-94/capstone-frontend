@@ -1,27 +1,42 @@
-# Capstone Frontend
+# Klymates
 
-This is the frontend for the Capstone project, built with React and Vite.
+Welcome to the klymates, a web application designed to help you plan your travels with sustainability in mind. This frontend is built with React and Vite, and it's packed with features to make your travel planning seamless and eco-friendly.
 
-## Deployment on Vercel
+## Features
 
-This frontend is designed to be deployed on Vercel. Follow these steps:
+*   **Climate-Conscious Travel:** Get insights into the environmental impact of your travel choices.
+*   **Community Forum:** Connect with other travelers, share tips, and ask questions in our community forum.
+*   **Itinerary Planner:** Plan your trips with our easy-to-use itinerary planner.
+*   **Interactive Map:** Explore destinations and find points of interest with our interactive map.
+*   **User Profiles:** Create a profile to save your itineraries and forum posts.
+*   **Search and Recommendations:** Find the best places to visit with our powerful search and recommendation engine.
 
-1.  **Create a new Project on Vercel:**
-    *   Connect your GitHub repository containing this frontend code.
-    *   Vercel should automatically detect it as a Vite project.
-2.  **Environment Variables:**
-    *   Set the `VITE_API_BASE_URL` environment variable in the Vercel dashboard to the URL of your deployed backend (on Render).
-        *Example:* `VITE_API_BASE_URL=https://your-backend-app.onrender.com`
+## Getting Started
 
-## Local Development
+To get a local copy up and running, follow these simple steps.
 
-1.  **Install dependencies:**
-    `npm install`
-2.  **Run the development server:**
-    `npm run dev`
+### Prerequisites
 
-This will start the frontend application, typically on `http://localhost:5173`.
+*   npm
+    ```sh
+    npm install npm@latest -g
+    ```
 
-## Connecting to Local Backend
+### Installation
 
-If you are running the backend locally, ensure it is running (e.g., on `http://localhost:5001`). The frontend will automatically connect to `http://localhost:5001` if `VITE_API_BASE_URL` is not explicitly set.
+1.  Clone the repo
+    ```sh
+    git clone https://github.com/Rubil-Mogere-94/capstone-frontend.git
+    ```
+2.  Install NPM packages
+    ```sh
+    npm install
+    ```
+3.  Run the development server
+    ```sh
+    npm run dev
+    ```
+
+This will start the frontend application, which you can access at `http://localhost:5173`.
+
+
