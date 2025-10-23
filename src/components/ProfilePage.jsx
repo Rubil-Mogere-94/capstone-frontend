@@ -8,8 +8,8 @@ import {
   EmailAuthProvider, reauthenticateWithCredential 
 } from 'firebase/auth';
 import AuthDetails from './AuthDetails';
-import Header from './Header'; // ✅ Added your header import
-import app from '../firebase'; // Assuming firebase.js is in the parent directory
+import Header from './Header';
+import app from '../firebase';
 
 const ProfilePage = () => {
   const auth = getAuth(app);
@@ -41,9 +41,7 @@ const ProfilePage = () => {
     }
   }, [currentUser]);
 
-  const handleUserChange = (user) => {
-    setCurrentUser(user);
-  };
+  const handleUserChange = (user) => setCurrentUser(user);
 
   const handleEditProfile = () => setIsEditingProfile(true);
   const handleCancelEdit = () => {
@@ -133,37 +131,47 @@ const ProfilePage = () => {
 
   return (
     <>
-      {/* ✅ Added Header at the top */}
       <Header />
 
-      {/* Your Original Profile Layout */}
       <Box
         sx={{
+          position: 'relative',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'flex-start',
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: '100vh',
+          width: '100vw',
           p: 3,
-          backgroundColor: '#f0f2f5',
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+                            url("https://i.pinimg.com/1200x/c4/39/ec/c439ec31c5a42ad79e929fc7d3c8c4a5.jpg")`,
+          backgroundSize: 'cover', // fill the screen
+          backgroundPosition: 'center', // keep it centered
+          backgroundRepeat: 'no-repeat',
+          backgroundAttachment: 'fixed', // parallax effect
+          '& > *': {
+            position: 'relative',
+            zIndex: 1,
+          },
         }}
       >
         <Paper
           elevation={6}
           sx={{
             p: 4,
-            maxWidth: 800,
+            maxWidth: 900,
             width: '100%',
-            borderRadius: 2,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+            borderRadius: 3,
+            backgroundColor: 'rgba(255,255,255,0.95)',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
           }}
         >
-          {/* All your content remains unchanged */}
+          {/* Profile Header */}
           <Grid container spacing={3} alignItems="center">
             <Grid item xs={12} md={3} sx={{ display: 'flex', justifyContent: 'center' }}>
               <Avatar
                 alt={userProfile.name}
                 src={photoURL || userProfile.avatarUrl}
-                sx={{ width: 120, height: 120, border: '3px solid #1976d2' }}
+                sx={{ width: 130, height: 130, border: '3px solid #1976d2' }}
               />
             </Grid>
             <Grid item xs={12} md={9}>
@@ -207,11 +215,7 @@ const ProfilePage = () => {
                     {userProfile.bio}
                   </Typography>
                   {currentUser && (
-                    <Button
-                      variant="outlined"
-                      sx={{ mt: 2 }}
-                      onClick={handleEditProfile}
-                    >
+                    <Button variant="outlined" sx={{ mt: 2 }} onClick={handleEditProfile}>
                       Edit Profile
                     </Button>
                   )}
@@ -222,15 +226,9 @@ const ProfilePage = () => {
 
           <Divider sx={{ my: 4 }} />
 
-          {/* (Everything else remains EXACTLY as your code — account info, preferences, activity, etc.) */}
-          {/* --- You don’t need to change anything below this line --- */}
-
-          {/* Account Info, Change Password, Preferences, Recent Activity ... */}
-          {/* 👇 Keeping as-is */}
-          {/* ... (all your original code continues unchanged) */}
-
+          {/* Account Information */}
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#333' }}>
+            <Typography variant="h5" gutterBottom sx={{ color: '#333' }}>
               Account Information
             </Typography>
             <Grid container spacing={2}>
@@ -247,6 +245,7 @@ const ProfilePage = () => {
                 <Typography variant="body1">{userProfile.lastLogin}</Typography>
               </Grid>
             </Grid>
+
             {currentUser && (
               <Button
                 variant="outlined"
@@ -256,6 +255,7 @@ const ProfilePage = () => {
                 {isChangingPassword ? 'Cancel Change Password' : 'Change Password'}
               </Button>
             )}
+
             {isChangingPassword && (
               <Box sx={{ mt: 3, maxWidth: 400 }}>
                 <TextField
@@ -301,8 +301,9 @@ const ProfilePage = () => {
 
           <Divider sx={{ my: 4 }} />
 
+          {/* Travel Preferences */}
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#333' }}>
+            <Typography variant="h5" gutterBottom sx={{ color: '#333' }}>
               Travel Preferences
             </Typography>
             {isEditingPreferences ? (
@@ -368,13 +369,14 @@ const ProfilePage = () => {
 
           <Divider sx={{ my: 4 }} />
 
+          {/* Recent Activity */}
           <Box sx={{ mt: 3 }}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#333' }}>
+            <Typography variant="h5" gutterBottom sx={{ color: '#333' }}>
               Recent Activity
             </Typography>
             <Typography variant="body1" color="text.secondary">
               (This section would display your recent searches, saved trips, and contributions. 
-              Implementation requires tracking user actions across the application and storing them in a database.)
+              Implementation requires tracking user actions across the application.)
             </Typography>
           </Box>
         </Paper>

@@ -12,8 +12,9 @@ import {
   styled
 } from '@mui/material';
 import TravelExploreIcon from '@mui/icons-material/TravelExplore';
-import Header from './Header'; // ✅ Import your Header component
+import Header from './Header'; // ✅ Your Header component
 
+// 🌈 Stylish Gradient Button
 const GradientButton = styled(Button)(({ theme }) => ({
   background: `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.secondary.main} 90%)`,
   border: 0,
@@ -65,12 +66,30 @@ const RecommendationPage = () => {
   };
 
   return (
-    <>
-      {/* ✅ Header at the top of the page */}
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, #f0f4f8 0%, #e1e8f0 100%)',
+        backgroundAttachment: 'fixed',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      {/* ✅ Header */}
       <Header />
 
-      <Container maxWidth="md" sx={{ py: 4 }}>
-        <Paper elevation={6} sx={{ p: { xs: 2, md: 4 }, borderRadius: 3, mb: 4, bgcolor: 'background.paper' }}>
+      <Container maxWidth="md" sx={{ py: 4, flexGrow: 1 }}>
+        {/* ✨ Main Paper (translucent look) */}
+        <Paper
+          elevation={6}
+          sx={{
+            p: { xs: 2, md: 4 },
+            borderRadius: 3,
+            mb: 4,
+            bgcolor: 'rgba(255, 255, 255, 0.8)',
+            backdropFilter: 'blur(6px)',
+          }}
+        >
           <Typography
             variant="h4"
             component="h1"
@@ -118,7 +137,12 @@ const RecommendationPage = () => {
         {recommendations && (
           <Paper
             elevation={6}
-            sx={{ p: { xs: 2, md: 4 }, borderRadius: 3, bgcolor: 'background.paper' }}
+            sx={{
+              p: { xs: 2, md: 4 },
+              borderRadius: 3,
+              bgcolor: 'rgba(255, 255, 255, 0.85)',
+              backdropFilter: 'blur(6px)',
+            }}
           >
             <Typography
               variant="h5"
@@ -132,7 +156,7 @@ const RecommendationPage = () => {
           </Paper>
         )}
       </Container>
-    </>
+    </Box>
   );
 };
 

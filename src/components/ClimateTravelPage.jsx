@@ -2,14 +2,14 @@ import { API_BASE_URL } from '../config';
 import React, { useState } from "react";
 import SearchForm from "./SearchForm";
 import MapView from "./MapView";
-import Header from "./Header"; // ✅ Import your Header component
+import Header from "./Header"; 
 import axios from "axios";
 
 function ClimateTravelPage() {
   const [recommendations, setRecommendations] = useState([]);
   const [explanation, setExplanation] = useState("");
   const [selectedDestination, setSelectedDestination] = useState(null);
-  const [userLocation, setUserLocation] = useState({ lat: -1.2921, lon: 36.8219 }); // default Nairobi
+  const [userLocation, setUserLocation] = useState({ lat: -1.2921, lon: 36.8219 }); 
 
   const handleSearch = async (payload) => {
     try {
