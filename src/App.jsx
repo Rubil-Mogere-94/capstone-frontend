@@ -9,6 +9,8 @@ import ForgotPassword from './components/ForgotPassword';
 import ExplorePage from './components/ExplorePage';
 import ProfilePage from './components/ProfilePage';
 import FavoritesPage from './components/FavoritesPage';
+import OfflineBanner from './components/OfflineBanner';
+
 
 import ClimateTravelPage from './components/ClimateTravelPage';
 import ItineraryPlannerPage from './components/ItineraryPlannerPage';
@@ -101,6 +103,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <Box sx={{ display: 'flex', minHeight: '100vh', width: '100%' }}>
         <CssBaseline />
+        <OfflineBanner />
         <Routes>
           {/* Authentication routes */}
           <Route

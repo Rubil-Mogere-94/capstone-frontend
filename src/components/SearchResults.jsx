@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
 import {
   Box,
   Typography,
@@ -159,12 +160,33 @@ export const ResultCard = ({ destination, index }) => {
 const SearchResults = ({ results }) => {
   const navigate = useNavigate();
   const [mapMarkers, setMapMarkers] = useState([]);
+  const [cachedResults, setCachedResults] = useState([]);
+  const isOnline = navigator.onLine;
   const [mapCenter, setMapCenter] = useState([0, 0]);
   const [mapZoom, setMapZoom] = useState(2);
 
   useEffect(() => {
-    if (results?.length > 0) {
-      const newMarkers = results.map((destination) => ({
+  if (results?.length > 0 && isOnline) {
+    // ✅ Save search results for offline use
+    localStorage.setItem("lastSearchResults", JSON.stringify(results));
+
+    const newMarkers = results.map(destination => ({
+      position: [destination.lat, destination.lon],
+      data: destination,
+    }));
+    setMapMarkers(newMarkers);
+    if (newMarkers.length > 0) {
+      setMapCenter(newMarkers[0].position);
+      setMapZoom(5);
+    }
+  } else if (!isOnline) {
+    // ✅ If offline, load cached data
+    const stored = localStorage.getItem("lastSearchResults");
+    if (stored) {
+      const offlineResults = JSON.parse(stored);
+      setCachedResults(offlineResults);
+
+      const newMarkers = offlineResults.map(destination => ({
         position: [destination.lat, destination.lon],
         data: destination,
       }));
@@ -174,7 +196,9 @@ const SearchResults = ({ results }) => {
         setMapZoom(5);
       }
     }
-  }, [results]);
+  }
+}, [results, isOnline]);
+
 
   return (
     <Box
@@ -237,7 +261,7 @@ const SearchResults = ({ results }) => {
         <AnimatePresence>
           <motion.div layout>
             <Grid container spacing={4}>
-              {results.map((destination, index) => (
+              {(isOnline ? results : cachedResults).map((destination, index) => (
                 <Grid item key={destination.id} xs={12} sm={6} md={4}>
                   <ResultCard destination={destination} index={index} />
                 </Grid>
