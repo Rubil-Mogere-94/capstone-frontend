@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Box,
@@ -13,19 +13,42 @@ import {
 } from '@mui/material';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'; // new icon
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
-
-
-import { useNavigate } from 'react-router-dom'; // ✅ for navigation
+import { useNavigate } from 'react-router-dom';
 import MapComponent from './MapComponent';
 import { GradientButton } from './common/GradientButton';
 
-
+// ✅ Individual Destination Card
 export const ResultCard = ({ destination, index }) => {
   const { id, name, country, temperature, precipitation } = destination;
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
+
+  // ✅ Check if destination is already in favorites
+  useEffect(() => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const exists = storedFavorites.some((fav) => fav.id === id);
+    setIsFavorite(exists);
+  }, [id]);
+
+  // ✅ Toggle favorite status
+  const toggleFavorite = () => {
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+    if (isFavorite) {
+      const updated = storedFavorites.filter((item) => item.id !== id);
+      localStorage.setItem('favorites', JSON.stringify(updated));
+      setIsFavorite(false);
+    } else {
+      storedFavorites.push(destination);
+      localStorage.setItem('favorites', JSON.stringify(storedFavorites));
+      setIsFavorite(true);
+    }
+  };
 
   return (
     <motion.div
@@ -39,6 +62,7 @@ export const ResultCard = ({ destination, index }) => {
           borderRadius: '16px',
           boxShadow: 3,
           overflow: 'hidden',
+          position: 'relative',
           cursor: 'pointer',
           '&:hover': { boxShadow: 6 },
         }}
@@ -61,13 +85,14 @@ export const ResultCard = ({ destination, index }) => {
             alt={`${name} landscape`}
             onLoad={() => setImageLoaded(true)}
             onError={(e) => {
-              e.target.src = '/fallback-image.jpg'; // Add fallback
+              e.target.src = '/fallback-image.jpg';
             }}
             sx={{
               width: '100%',
               height: '100%',
               objectFit: 'cover',
               opacity: imageLoaded ? 1 : 0,
+              transition: 'opacity 0.3s ease-in-out',
             }}
           />
 
@@ -80,20 +105,46 @@ export const ResultCard = ({ destination, index }) => {
               <Typography variant="body2">{country}</Typography>
             </Box>
           </Box>
+
+          {/* ❤️ Favorite Button (top-right corner) */}
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite();
+            }}
+            sx={{
+              position: 'absolute',
+              top: 12,
+              right: 12,
+              backgroundColor: 'rgba(255,255,255,0.8)',
+              '&:hover': { backgroundColor: 'rgba(255,255,255,1)' },
+              zIndex: 30,
+            }}
+          >
+            {isFavorite ? (
+              <FavoriteIcon color="error" />
+            ) : (
+              <FavoriteBorderIcon color="error" />
+            )}
+          </IconButton>
         </Box>
 
         <CardContent sx={{ p: 3 }}>
           {/* Weather Info */}
           <Grid container spacing={2}>
-            <Grid sx={{ xs: 6 }}>
-              <Typography variant="body2">Avg Temp: {temperature.avg !== null ? `${temperature.avg}°C` : 'N/A'}</Typography>
+            <Grid item xs={6}>
+              <Typography variant="body2">
+                Avg Temp: {temperature?.avg !== null ? `${temperature.avg}°C` : 'N/A'}
+              </Typography>
             </Grid>
-            <Grid sx={{ xs: 6 }}>
-              <Typography variant="body2">Precip: {precipitation.avg !== null ? `${precipitation.avg}mm` : 'N/A'}</Typography>
+            <Grid item xs={6}>
+              <Typography variant="body2">
+                Precip: {precipitation?.avg !== null ? `${precipitation.avg}mm` : 'N/A'}
+              </Typography>
             </Grid>
           </Grid>
 
-          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ mt: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <GradientButton onClick={() => navigate(`/destinations/${id}`)}>
               View Details <ArrowForwardIcon fontSize="small" />
             </GradientButton>
@@ -104,15 +155,16 @@ export const ResultCard = ({ destination, index }) => {
   );
 };
 
+// ✅ Main SearchResults Page
 const SearchResults = ({ results }) => {
-  const navigate = useNavigate(); // ✅ navigation hook
+  const navigate = useNavigate();
   const [mapMarkers, setMapMarkers] = useState([]);
   const [mapCenter, setMapCenter] = useState([0, 0]);
   const [mapZoom, setMapZoom] = useState(2);
 
   useEffect(() => {
     if (results?.length > 0) {
-      const newMarkers = results.map(destination => ({
+      const newMarkers = results.map((destination) => ({
         position: [destination.lat, destination.lon],
         data: destination,
       }));
@@ -124,23 +176,18 @@ const SearchResults = ({ results }) => {
     }
   }, [results]);
 
-  
-
-  
-
   return (
     <Box
       component="section"
       sx={{
         py: 8,
         background: 'linear-gradient(to bottom, rgba(239,246,255,0.5), rgba(224,247,250,0.5))',
+        minHeight: '100vh',
       }}
     >
       <Container maxWidth="lg">
-        
-
-        {/* ✅ Back to Home Button */}
-        <Box sx={{ mb: 3 }}>
+        {/* 🔙 Back to Home */}
+        <Box sx={{ mb: 3, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Button
             variant="outlined"
             startIcon={<ArrowBackIcon />}
@@ -149,7 +196,22 @@ const SearchResults = ({ results }) => {
           >
             Back to Home
           </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => navigate('/favorites')}
+            sx={{
+              borderRadius: '12px',
+              fontWeight: 'bold',
+              background: 'linear-gradient(45deg, #ff4081, #f50057)',
+            }}
+          >
+            View Favorites ❤️
+          </Button>
         </Box>
+
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -160,16 +222,18 @@ const SearchResults = ({ results }) => {
             Explore Destinations
           </Typography>
           <Typography variant="body1" sx={{ color: 'grey.600', maxWidth: 768, mx: 'auto' }}>
-            Discover multiple locations around the world.
+            Discover multiple locations around the world and save your favorites.
           </Typography>
         </motion.div>
 
+        {/* 🗺️ Map */}
         {mapMarkers.length > 0 && (
           <Box sx={{ mb: 4 }}>
             <MapComponent center={mapCenter} zoom={mapZoom} markers={mapMarkers} />
           </Box>
         )}
 
+        {/* 🌍 Destination Grid */}
         <AnimatePresence>
           <motion.div layout>
             <Grid container spacing={4}>

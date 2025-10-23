@@ -8,6 +8,7 @@ import AuthDetails from './components/AuthDetails';
 import ForgotPassword from './components/ForgotPassword';
 import ExplorePage from './components/ExplorePage';
 import ProfilePage from './components/ProfilePage';
+import FavoritesPage from './components/FavoritesPage';
 
 import ClimateTravelPage from './components/ClimateTravelPage';
 import ItineraryPlannerPage from './components/ItineraryPlannerPage';
@@ -39,6 +40,7 @@ const AuthenticatedLayout = () => {
       <Routes>
         <Route path="/explore" element={<ExplorePage />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/favorites" element={<FavoritesPage />} />
         
         
         <Route path="/climate-travel" element={<ClimateTravelPage />} />
