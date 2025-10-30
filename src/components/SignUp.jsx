@@ -19,9 +19,58 @@ const SignUp = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: 'background.default' }}>
-      <Paper elevation={3} sx={{ padding: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        <Typography variant="h5" component="h1">Sign Up</Typography>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '100vh',
+        bgcolor: 'background.default',
+        gap: 6,
+        px: 3,
+      }}
+    >
+      {/* Left side - Gradient text */}
+      <Box sx={{ textAlign: 'center' }}>
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 'bold',
+            background: 'linear-gradient(90deg, black, red)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Create an Account With
+        </Typography>
+        <Typography
+          variant="h2"
+          sx={{
+            fontWeight: 'bold',
+            mt: 1,
+            background: 'linear-gradient(90deg, red, black)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}
+        >
+          Klymates
+        </Typography>
+      </Box>
+
+      {/* Right side - Sign-up form */}
+      <Paper
+        elevation={3}
+        sx={{
+          padding: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 2,
+          minWidth: 320,
+        }}
+      >
+        <Typography variant="h5" component="h1" align="center">
+          Sign Up
+        </Typography>
         <TextField
           label="Email"
           variant="outlined"
@@ -37,8 +86,12 @@ const SignUp = () => {
           onChange={(e) => setPassword(e.target.value)}
           fullWidth
         />
-        <Button variant="contained" onClick={handleSignUp} fullWidth>Sign Up</Button>
-        <Button variant="text" onClick={() => navigate('/signin')} fullWidth>Already have an account? Sign In</Button>
+        <Button variant="contained" onClick={handleSignUp} fullWidth>
+          Sign Up
+        </Button>
+        <Button variant="text" onClick={() => navigate('/signin')} fullWidth>
+          Already have an account? Sign In
+        </Button>
       </Paper>
     </Box>
   );
