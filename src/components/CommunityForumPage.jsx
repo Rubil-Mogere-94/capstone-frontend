@@ -6,7 +6,7 @@ import PostForm from './CommunityForum/PostForm';
 import Header from './Header';
 import { styled } from '@mui/material/styles';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getPosts, createPost } from '../utils/apiClient';
+import { getPosts, createPost, deletePost } from '../utils/apiClient';
 
 // Same gradient button from previous pages
 const GradientButton = styled(Button)(({ theme }) => ({
@@ -38,8 +38,19 @@ const CommunityForumPage = () => {
     },
   });
 
+  const deletePostMutation = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['posts']);
+    },
+  });
+
   const handleAddPost = (newPost) => {
     createPostMutation.mutate(newPost);
+  };
+
+  const handleDeletePost = (postId) => {
+    deletePostMutation.mutate(postId);
   };
 
   const handleCloseForm = () => {
@@ -158,7 +169,7 @@ const CommunityForumPage = () => {
                 </Typography>
               </Box>
             ) : (
-              <PostList posts={posts} />
+              <PostList posts={posts} onDelete={handleDeletePost} />
             )}
           </Paper>
 

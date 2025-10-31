@@ -61,6 +61,10 @@ export const createPost = (postData) => {
     return authApiClient('/api/forum/posts', 'POST', postData);
 };
 
+export const deletePost = (postId) => {
+    return authApiClient(`/api/forum/posts/${postId}`, 'DELETE');
+};
+
 export const getComments = (postId) => {
     return apiClient(`/api/forum/posts/${postId}/comments`);
 };

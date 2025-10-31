@@ -1,8 +1,13 @@
 import React from 'react';
-import { Box, Typography, List, ListItem, ListItemText, Paper, Divider } from '@mui/material';
+import { Box, Typography, List, ListItem, ListItemText, Paper, Divider, IconButton, Tooltip } from '@mui/material';
 import { motion } from 'framer-motion';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { getAuth } from 'firebase/auth';
 
-const PostList = ({ posts }) => {
+const PostList = ({ posts, onDelete }) => {
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
+
   return (
     <List>
       {posts.map((post, index) => (
@@ -12,7 +17,24 @@ const PostList = ({ posts }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.05 }}
         >
-          <Paper elevation={3} sx={{ mb: 2, borderRadius: '12px', overflow: 'hidden' }}>
+          <Paper elevation={3} sx={{ mb: 2, borderRadius: '12px', overflow: 'hidden', position: 'relative' }}>
+            {currentUser && currentUser.uid === post.author_uid && (
+              <Tooltip title="Delete Post">
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => onDelete(post.id)}
+                  sx={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    color: 'grey.500',
+                    '&:hover': { color: 'error.main' },
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+            )}
             <ListItem alignItems="flex-start" sx={{ py: 2, px: 3 }}>
               <ListItemText
                 primary={
