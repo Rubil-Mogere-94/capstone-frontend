@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Typography, Container, Paper, Button, Dialog, DialogTitle, DialogContent } from '@mui/material';
+import { Box, Typography, Container, Paper, Button, Dialog, DialogTitle, DialogContent, CircularProgress } from '@mui/material';
 import { motion } from 'framer-motion';
 import PostList from './CommunityForum/PostList';
 import PostForm from './CommunityForum/PostForm';
 import Header from './Header';
 import { styled } from '@mui/material/styles';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getPosts, createPost } from '../../utils/apiClient';
 
 // Same gradient button from previous pages
 const GradientButton = styled(Button)(({ theme }) => ({
@@ -20,20 +22,24 @@ const GradientButton = styled(Button)(({ theme }) => ({
 }));
 
 const CommunityForumPage = () => {
-  const [posts, setPosts] = useState([]);
   const [openForm, setOpenForm] = useState(false);
+  const queryClient = useQueryClient();
+
+  const { data: posts, isLoading, isError } = useQuery({
+    queryKey: ['posts'],
+    queryFn: getPosts,
+  });
+
+  const createPostMutation = useMutation({
+    mutationFn: createPost,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['posts']);
+      setOpenForm(false);
+    },
+  });
 
   const handleAddPost = (newPost) => {
-    setPosts((prev) => [
-      {
-        id: Date.now(),
-        author: 'Current User', 
-        date: new Date().toLocaleDateString(),
-        ...newPost,
-      },
-      ...prev,
-    ]);
-    setOpenForm(false);
+    createPostMutation.mutate(newPost);
   };
 
   const handleCloseForm = () => {
@@ -74,8 +80,8 @@ const CommunityForumPage = () => {
             <Typography
               variant="h3"
               component="h1"
-              sx={{ 
-                fontWeight: 'bold', 
+              sx={{
+                fontWeight: 'bold',
                 color: '#e01212ff',
                 mb: 2,
               }}
@@ -84,9 +90,9 @@ const CommunityForumPage = () => {
             </Typography>
             <Typography
               variant="h6"
-              sx={{ 
-                color: '#f55853ff', 
-                maxWidth: 600, 
+              sx={{
+                color: '#f55853ff',
+                maxWidth: 600,
                 mx: 'auto',
                 fontWeight: 400,
                 lineHeight: 1.6
@@ -121,20 +127,30 @@ const CommunityForumPage = () => {
               boxShadow: '0 2px 12px rgba(107, 103, 109, 0.08)',
             }}
           >
-            {posts.length === 0 ? (
+            {isLoading ? (
               <Box sx={{ textAlign: 'center', py: 6 }}>
-                <Typography 
-                  variant="h5" 
-                  color="#7a7678" 
-                  sx={{ 
+                <CircularProgress />
+              </Box>
+            ) : isError ? (
+              <Box sx={{ textAlign: 'center', py: 6 }}>
+                <Typography variant="h5" color="error">
+                  Failed to load posts.
+                </Typography>
+              </Box>
+            ) : posts.length === 0 ? (
+              <Box sx={{ textAlign: 'center', py: 6 }}>
+                <Typography
+                  variant="h5"
+                  color="#7a7678"
+                  sx={{
                     mb: 2,
                     fontWeight: 300
                   }}
                 >
                   No posts yet.
                 </Typography>
-                <Typography 
-                  variant="body1" 
+                <Typography
+                  variant="body1"
                   color="#0a090aff"
                   sx={{ opacity: 0.8 }}
                 >
@@ -146,10 +162,10 @@ const CommunityForumPage = () => {
             )}
           </Paper>
 
-          <Dialog 
-            open={openForm} 
-            onClose={handleCloseForm} 
-            fullWidth 
+          <Dialog
+            open={openForm}
+            onClose={handleCloseForm}
+            fullWidth
             maxWidth="sm"
             PaperProps={{
               sx: {
@@ -159,10 +175,10 @@ const CommunityForumPage = () => {
               }
             }}
           >
-            <DialogTitle 
-              sx={{ 
+            <DialogTitle
+              sx={{
                 backgroundColor: '#6b676d',
-                color: 'white', 
+                color: 'white',
                 pb: 2,
                 pt: 3
               }}

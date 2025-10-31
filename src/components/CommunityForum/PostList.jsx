@@ -28,10 +28,10 @@ const PostList = ({ posts }) => {
                       variant="body2"
                       color="text.secondary"
                     >
-                      by {post.author}
+                      by {post.author_uid.substring(0, 8)}... {/* Displaying a shortened author UID */}
                     </Typography>
                     <Typography variant="body2" color="text.disabled" sx={{ display: 'inline' }}>
-                      on {post.date}
+                      on {new Date(post.created_at).toLocaleDateString()}
                     </Typography>
                     <Typography component="div" variant="body1" sx={{ mt: 1.5, color: 'text.primary' }}>
                       {post.content}
