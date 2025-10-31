@@ -6,7 +6,7 @@ import PostForm from './CommunityForum/PostForm';
 import Header from './Header';
 import { styled } from '@mui/material/styles';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getPosts, createPost } from '../../utils/apiClient';
+import { getPosts, createPost } from '../utils/apiClient';
 
 // Same gradient button from previous pages
 const GradientButton = styled(Button)(({ theme }) => ({
