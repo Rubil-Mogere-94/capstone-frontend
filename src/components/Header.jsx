@@ -29,7 +29,7 @@ import { getAuth, signOut } from 'firebase/auth';
 import app from '../firebase';
 
 // 🔑 Replace with your own OpenWeatherMap API key
-const API_KEY = 'YOUR_OPENWEATHERMAP_API_KEY';
+const API_KEY = import.meta.env.VITE_OPENWEATHERMAP_API_KEY;
 
 // Gradient Text for Logo
 const GradientText = styled(Typography)(({ theme }) => ({
