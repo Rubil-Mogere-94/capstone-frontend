@@ -49,7 +49,7 @@ const RecommendationPage = () => {
     setError('');
     setRecommendations('');
     try {
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro-latest" });
 
       const fullPrompt = `Given the following user preference: "${prompt}", recommend places to visit that have low population density and minimal environmental impact. Focus on sustainable travel and unique, less-traveled destinations. Provide a short description for each. Format the output clearly with headings for each recommendation.`;
 
